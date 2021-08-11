@@ -1,0 +1,51 @@
+{{#each orders}}
+    <div class="row">
+        <div class="col-md-5">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">quantity</th>
+                    <th scope="col">Subtotal</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each this.dataValues.items}}
+                    <tr>
+                        <td>{{this.dataValues.name}}</td>
+                        <td>{{this.OrderItem.dataValues.quantity}}</td>
+                        <td>{{this.dataValues.price}}</td>
+                    </tr>
+                {{/each}}
+                <tr>
+                    <td></td>
+                    <td style="text-align: right;"><h4>Total: </h4></td>
+                    <td><h4>{{this.dataValues.amount}}</h4></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <ul>
+                <li>{{this.dataValues.id}}</li>
+                <li>name: {{this.dataValues.name}}</li>
+                <li>address: {{this.dataValues.address}}</li>
+                <li>phone: {{this.dataValues.phone}}</li>
+                <li>shipping_status: {{this.dataValues.shipping_status}}</li>
+                <li>payment_status: {{this.dataValues.payment_status}}</li>
+            </ul>
+
+            <div style="display: flex; justify-content: space-around;">
+                <form action="/order/{{this.dataValues.id}}/cancel" method="POST">
+                    <button type="submit" class="btn btn-primary">取消訂單</button>
+                </form>
+
+                <a href="/order/{{this.dataValues.id}}/payment"><button class="btn btn-primary">立即付款</button></a>
+            </div>
+        </div>
+
+    </div>
+
+    <hr/>
+{{/each}}
