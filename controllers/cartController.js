@@ -33,7 +33,41 @@ const cartController = {
       if (!created) { product.quantity += 1 }
       await product.save()
       req.session.cartId = cart.id
-      return res.status(200).redirect('back')
+      return res.redirect('back')
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  // 增加商品數量
+  addCartItem: async (req, res) => {
+    try {
+      const cartItem = await CartItem.findByPk(req.params.id)
+      cartItem.update({
+        quantity: cartItem.quantity + 1
+      })
+      return res.redirect('back')
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  // 減少商品數量
+  subCartItem: async (req, res) => {
+    try {
+      const cartItem = await CartItem.findByPk(req.params.id)
+      cartItem.update({
+        quantity: cartItem.quantity - 1 >= 1 ? cartItem.quantity - 1 : 1
+      })
+      return res.redirect('back')
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  // 刪除商品
+  deleteCartItem: async (req, res) => {
+    try {
+      const cartItem = await CartItem.findByPk(req.params.id)
+      cartItem.destroy()
+      return res.redirect('back')
     } catch (e) {
       console.log(e)
     }

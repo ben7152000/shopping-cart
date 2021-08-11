@@ -5,6 +5,7 @@ const path = require('path')
 const exphbs = require('express-handlebars')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
+const methodOverride = require('method-override')
 
 const app = express()
 const PORT = process.env.PORT || 8081
@@ -22,6 +23,7 @@ app.engine('.hbs', exphbs({
 
 app.use(morgan('dev'))
 app.use(express.json())
+app.use(methodOverride('_method'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cookieParser())
