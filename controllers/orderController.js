@@ -1,9 +1,12 @@
+const dotenv = require('dotenv')
 const nodemailer = require('nodemailer')
 const crypto = require('crypto')
 const db = require('../models')
 const Order = db.Order
 const OrderItem = db.OrderItem
 const Cart = db.Cart
+
+dotenv.config()
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -13,10 +16,10 @@ const transporter = nodemailer.createTransport({
   }
 })
 
-const URL = 'http://70010b649381.ngrok.io'
-const MerchantID = 'MS322195381'
-const HashKey = 'uPmzuZDpJEr4eX9mXZ8RyILia0ODZuYy'
-const HashIV = 'CiX7d3JmKyCyfSNP'
+const URL = process.env.NEWEBPAY_URL
+const MerchantID = process.env.NEWEBPAY_MERCHANT_ID
+const HashKey = process.env.NEWEBPAY_HASH_KEY
+const HashIV = process.env.NEWEBPAY_HASH_IV
 const PayGateWay = 'https://ccore.spgateway.com/MPG/mpg_gateway'
 const ReturnURL = URL + '/spgateway/callback?from=ReturnURL'
 const NotifyURL = URL + '/spgateway/callback?from=NotifyURL'
