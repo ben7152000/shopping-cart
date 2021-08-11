@@ -1,27 +1,12 @@
-const express = require('express')
-const router = express.Router()
+const router = require('express').Router()
+const orders = require('./modules/orders')
+const carts = require('./modules/carts')
+const cartItems = require('./modules/cartItems')
+const products = require('./modules/products')
 
-const productController = require('../controllers/productController.js')
-const cartController = require('../controllers/cartController.js')
-const orderController = require('../controllers/orderController.js')
-
-// 產品
-router.get('/products', productController.getProducts)
-
-// 購物車
-router.get('/cart', cartController.getCart)
-router.post('/cart', cartController.postCart)
-router.post('/cartItem/:id/add', cartController.addCartItem)
-router.post('/cartItem/:id/sub', cartController.subCartItem)
-router.delete('/cartItem/:id', cartController.deleteCartItem)
-
-// 訂單
-router.get('/orders', orderController.getOrders)
-router.post('/order', orderController.postOrder)
-router.post('/order/:id/cancel', orderController.cancelOrder)
-router.get('/order/:id/payment', orderController.getPayment)
-
-// 第三方串接
-router.post('/spgateway/callback', orderController.spgatewayCallback)
+router.use('/order', orders)
+router.use('/cart', carts)
+router.use('/cartItem', cartItems)
+router.use('/product', products)
 
 module.exports = router
