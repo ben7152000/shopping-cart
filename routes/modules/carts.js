@@ -1,7 +1,14 @@
 const router = require('express').Router()
 const cartController = require('../../controllers/cartController')
 
-router.get('/', cartController.getCart)
-router.post('/', cartController.postCart)
+const auth = require('../../middleware/auth')
+const checkToken = require('../../middleware/checkToken')
+
+router.get('/', (req, res, next) => {
+  checkToken(req, res, next, cartController.getCart)
+}, auth.authenticated, cartController.getCart)
+router.post('/', (req, res, next) => {
+  checkToken(req, res, next, cartController.postCart)
+}, auth.authenticated, cartController.postCart)
 
 module.exports = router
