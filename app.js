@@ -2,19 +2,28 @@ const dotenv = require('dotenv')
 const express = require('express')
 const morgan = require('morgan')
 const path = require('path')
+const exphbs = require('express-handlebars')
 
 const app = express()
 const PORT = process.env.PORT || 8081
 dotenv.config()
+
+const routes = require('./routes')
+
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'hbs')
+app.engine('.hbs', exphbs({
+  extname: '.hbs',
+  defaultLayout: 'main',
+  helpers: require('./config/handlebars-helpers')
+}))
 
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.get('/', (req, res) => {
-  res.json('hello world')
-})
+app.use(routes)
 
 app.listen(PORT, () => {
   console.log(`The server is running on http://localhost:${PORT}`)

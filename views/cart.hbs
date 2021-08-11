@@ -1,0 +1,56 @@
+<h1>顯示購物車</h1>
+
+<div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Price</th>
+            <th scope="col">quantity</th>
+            <th scope="col">Subtotal</th>
+            <th scope="col">#</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each cart.items}}
+            <tr>
+                <td>
+                    <div style="display: flow-root;">
+                        <img src="{{this.dataValues.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
+                        <span>{{this.dataValues.name}}</span>
+                    </div>
+                </td>
+                <td><p>$ {{this.dataValues.price}}</p></td>
+                <td>
+                    <div style="display: flex;">
+                        <form action="/cartItem/{{this.CartItem.dataValues.id}}/add" method="POST">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
+                        </form>
+                        <span style="margin: 0 20px;">
+                            {{this.CartItem.dataValues.quantity}}
+                        </span>
+                        <form action="/cartItem/{{this.CartItem.dataValues.id}}/sub" method="POST">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">-</button>
+                        </form>
+                    </div>
+                </td>
+                <td>{{this.dataValues.price}} * {{this.CartItem.dataValues.quantity}}</td>
+                <td>
+                    <form action="/cartItem/{{this.CartItem.dataValues.id}}?_method=DELETE" method="POST">
+                        <button type="submit" class="btn btn-link">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {{/each}}
+        <tr>
+            <td></td>
+            <td></td>
+            <td style="text-align: right;"><h2>Total: </h2></td>
+            <td><h2>{{totalPrice}}</h2></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

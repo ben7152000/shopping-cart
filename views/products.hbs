@@ -1,0 +1,32 @@
+<div class="row">
+    <div class="col-md-9">
+        <div class="row">
+
+            {{#each products.rows}}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="{{this.dataValues.image}}">
+                        <div class="card-body">
+                            <p class="card-text">
+                                <h4><a href="/products/{{this.dataValues.id}}">{{this.dataValues.id}} {{this.dataValues.name}}</a></h4>
+                                <span>{{this.description}}</span>
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">$ {{this.dataValues.price}}</small>
+                                <div class="btn-group">
+
+                                    <form action="/cart" method="POST">
+                                        <input type="hidden" name="productId" value="{{this.dataValues.id}}">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Add to Cart</button>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+
+        </div>
+    </div>
+</div>
