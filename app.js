@@ -3,6 +3,8 @@ const express = require('express')
 const morgan = require('morgan')
 const path = require('path')
 const exphbs = require('express-handlebars')
+const cookieParser = require('cookie-parser')
+const session = require('express-session')
 
 const app = express()
 const PORT = process.env.PORT || 8081
@@ -22,6 +24,14 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(cookieParser())
+app.use(session({
+  secret: 'Ben',
+  name: 'Ben',
+  cookie: { maxAge: 80000 },
+  resave: false,
+  saveUninitialized: true
+}))
 
 app.use(routes)
 

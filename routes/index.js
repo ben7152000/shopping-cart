@@ -7,5 +7,6 @@ const cartController = require('../controllers/cartController.js')
 router.get('/products', productController.getProducts)
 
 router.get('/cart', cartController.getCart)
+router.post('/cart', cartController.postCart)
 
 module.exports = router
