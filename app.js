@@ -6,6 +6,8 @@ const exphbs = require('express-handlebars')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const methodOverride = require('method-override')
+const cors = require('cors')
+const passport = require('passport')
 
 const app = express()
 const PORT = process.env.PORT || 8081
@@ -21,6 +23,7 @@ app.engine('.hbs', exphbs({
   helpers: require('./config/handlebars-helpers')
 }))
 
+app.use(cors())
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(methodOverride('_method'))
@@ -34,6 +37,8 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use(routes)
 

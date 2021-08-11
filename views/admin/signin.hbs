@@ -1,0 +1,49 @@
+<div class="row mt-5">
+    <div class="col-md-6 m-auto">
+        <div class="card card-body">
+            <h2 class="text-center mt-3">
+                {{#if front}}
+                    前台
+                {{else}}
+                    後台
+                {{/if}}
+                SignIn</h2>
+            {{#if front}}
+            <form action="/users/sign-in" method="POST">
+            {{else}}
+            <form action="/admin/sign-in" method="POST">
+            {{/if}}
+            <div class="form-group mb-3">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" class="form-control" placeholder="enter Email"
+                       value="{{ email }}" required>
+            </div>
+            <div class="form-group mb-3">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" class="form-control" placeholder="enter Password"
+                       required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">SignIn</button>
+            {{#if front}}
+                <a href="/users/google" class="btn btn-success btn-block mt-2">Google Login</a>
+            {{/if}}
+        </form>
+            {{#if front}}
+                <div class="d-flex justify-content-between">
+                    <p class="lead mt-3">
+                        尚未註冊?<a href="/users/sign-up">前往註冊</a>
+                    </p>
+                    <p class="lead mt-3">
+                        <a href="/admin/sign-in">後台登入</a>
+                    </p>
+                </div>
+            {{else}}
+                <div class="d-flex justify-content-end">
+                    <p class="lead mt-3">
+                        <a href="/users/sign-in">前台登入</a>
+                    </p>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</div>
