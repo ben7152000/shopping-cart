@@ -36,7 +36,7 @@
                 <li>payment_status: {{this.dataValues.payment_status}}</li>
             </ul>
 
-            <div style="display: flex; justify-content: space-around;">
+            <div style="display: flex; justify-content: space-around;min-width: 300px;">
                 <form action="/order/{{this.dataValues.id}}/cancel" method="POST">
                     <button type="submit" class="btn btn-primary">取消訂單</button>
                 </form>
