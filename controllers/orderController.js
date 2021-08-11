@@ -1,7 +1,16 @@
+const nodemailer = require('nodemailer')
 const db = require('../models')
 const Order = db.Order
 const OrderItem = db.OrderItem
 const Cart = db.Cart
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_ACCOUNT,
+    pass: process.env.GMAIL_PASSWORD
+  }
+})
 
 const orderController = {
   // 取得所有訂單
@@ -37,6 +46,22 @@ const orderController = {
         })
         results.push(orderItem)
       }
+
+      const mailOptions = {
+        from: 'Ben from<ben7152000@gmail.com>',
+        to: 'Ben to<ben7152000@gmail.com>',
+        subject: `${order.id} 訂單成立`,
+        text: `${order.id} 訂單成立`
+      }
+
+      await transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error)
+        } else {
+          console.log('Email sent: ' + info.response)
+        }
+      })
+
       return res.redirect('/orders')
     } catch (e) {
       console.log(e)
