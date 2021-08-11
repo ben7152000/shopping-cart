@@ -1,20 +1,9 @@
-const dotenv = require('dotenv')
-const nodemailer = require('nodemailer')
 const crypto = require('crypto')
 const db = require('../models')
 const Order = db.Order
 const OrderItem = db.OrderItem
 const Cart = db.Cart
-
-dotenv.config()
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_ACCOUNT,
-    pass: process.env.GMAIL_PASSWORD
-  }
-})
+const nodeMailer = require('../utils/nodemailer')
 
 const URL = process.env.NEWEBPAY_URL
 const MerchantID = process.env.NEWEBPAY_MERCHANT_ID
@@ -123,22 +112,9 @@ const orderController = {
         results.push(orderItem)
       }
 
-      const mailOptions = {
-        from: 'Ben from<ben7152000@gmail.com>',
-        to: 'Ben to<ben7152000@gmail.com>',
-        subject: `${order.id} 訂單成立`,
-        text: `${order.id} 訂單成立`
-      }
+      nodeMailer.sendMail('ben7152000@gmail.com', 'hi', 'hihi')
 
-      await transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error)
-        } else {
-          console.log('Email sent: ' + info.response)
-        }
-      })
-
-      return res.redirect('/orders')
+      return res.redirect('/order')
     } catch (e) {
       console.log(e)
     }
