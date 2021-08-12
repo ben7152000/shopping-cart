@@ -5,6 +5,7 @@ const path = require('path')
 const exphbs = require('express-handlebars')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
+const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const cors = require('cors')
 const passport = require('passport')
@@ -27,6 +28,7 @@ app.set('view engine', 'hbs')
 app.use(cors())
 app.use(morgan('dev'))
 app.use(express.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, 'public')))
@@ -52,10 +54,11 @@ app.use((req, res, next) => {
   res.locals.danger_msg = req.flash('danger_msg')
   return next()
 })
+
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.use(routes)
+routes(app, passport)
 
 app.listen(PORT, () => {
   console.log(`The server is running on http://localhost:${PORT}`)

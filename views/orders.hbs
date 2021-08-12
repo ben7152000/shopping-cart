@@ -3,7 +3,7 @@
 </div>
 {{#each orders}}
     <div class="row mt-4">
-        <div class="col-md-5">
+        <div class="col-md-6 mx-auto">
             <h3 class="ml-2 font-weight-bold text-primary">訂單編號: {{this.id}}</h3>
             <table class="table">
                 <thead>
@@ -15,7 +15,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{#each this.orderProducts}}
+                {{#each this.items}}
                     <tr>
                         <td>{{this.name}}</td>
                         <td>{{this.price}}</td>

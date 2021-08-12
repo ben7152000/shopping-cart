@@ -55,7 +55,7 @@
                 </td>
                 <td class="text-center align-middle">$ {{multiply this.price this.CartItem.quantity}}</td>
                 <td class="text-center align-middle">
-                    <form action="/cartItem/{{this.CartItem.dataValues.id}}?_method=DELETE" method="POST">
+                    <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
                         <button type="submit" class="btn btn-link" style="color: red;">
                             <i class="fas fa-trash"></i>
                         </button>

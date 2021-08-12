@@ -5,11 +5,10 @@ const JwtStrategy = passportJWT.Strategy
 const db = require('../models')
 const User = db.User
 
-const jwtOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET,
-  passReqToCallback: true
-}
+const jwtOptions = {}
+jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken()
+jwtOptions.secretOrKey = process.env.JWT_SECRET
+jwtOptions.passReqToCallback = true
 
 const jwtStrategy = new JwtStrategy(jwtOptions, async (req, payload, cb) => {
   try {
@@ -18,7 +17,6 @@ const jwtStrategy = new JwtStrategy(jwtOptions, async (req, payload, cb) => {
       return cb(null, false)
     }
     req.user = user.toJSON()
-    req.session.user = user.toJSON()
     return cb(null, user)
   } catch (e) {
     console.log(e)

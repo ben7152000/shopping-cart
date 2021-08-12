@@ -22,13 +22,11 @@ const orderController = {
         nest: true,
         where: { UserId: req.user.id }
       })
-      orders.forEach(order => {
-        order.orderProducts = []
-      })
+      orders.forEach(order => { order.items = [] })
       ordersHavingProducts.forEach(product => {
         const index = orders.findIndex(order => order.id === product.id)
         if (index === -1) return
-        orders[index].orderProducts.push(product.orderProducts)
+        orders[index].items.push(product.items)
       })
       return res.render('orders', { orders })
     } catch (e) {
@@ -41,8 +39,8 @@ const orderController = {
     try {
       const order = await Order.findByPk(req.params.id, { include: 'items' })
       if (order.toJSON().payment_status === '0') {
-        const tradeData = mpgData.getData(order.amount, 'Diving Park-精選商品', req.session.user.email)
-        await order.update({ sn: tradeData.MerchantOrderNo })
+        const tradeData = mpgData.getData(order.amount, 'Diving Park-精選商品', req.user.email)
+        await order.update({ sn: tradeData.MerchantOrderNo.toString() })
         return res.render('order', { order: order.toJSON(), tradeData })
       } else {
         const paidOrder = true
@@ -57,7 +55,7 @@ const orderController = {
   fillOrderData: async (req, res) => {
     try {
       const cart = await Cart.findOne({
-        where: { UserId: req.session.user.id },
+        where: { UserId: req.user.id },
         include: 'items'
       })
       if (!cart || !cart.items.length) {
@@ -66,7 +64,7 @@ const orderController = {
       }
       const cartId = cart.id
       const amount = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
-      return res.render('orderData', { cartId, amount })
+      return res.render('orderInfo', { cartId, amount })
     } catch (e) {
       console.log(e)
     }
@@ -79,7 +77,7 @@ const orderController = {
       const cart = await Cart.findByPk(req.body.cartId, { include: 'items' })
       // 建立訂單
       let order = await Order.create({
-        UserId: req.session.user.id,
+        UserId: req.user.id,
         name: req.body.name,
         address: req.body.address,
         phone: req.body.phone,
@@ -101,7 +99,7 @@ const orderController = {
       Promise.all(items)
 
       // 發送 mail
-      const email = req.session.user.email
+      const email = req.user.email
       const subject = `[TEST]Diving Park 訂購編號:${order.id} 成立，請把握時間付款`
       const status = '未出貨 / 未付款'
       const msg = '請點擊付款連結並使用測試信用卡付款! 感謝配合!'

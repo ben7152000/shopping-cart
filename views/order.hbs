@@ -1,21 +1,4 @@
 <style>
-    .step {
-        border: #3fb618 1px solid;
-        border-radius: 30px;
-        padding: 8px 12px;
-        color: black;
-    }
-
-    .step-now {
-        background-color: #3fb618;
-    }
-
-    .line {
-        border-top: #3fb618 1px solid;
-        margin-top: 10px;
-        width: 300px;
-    }
-
     h3 {
         {{#if paidOrder}}
             color:red;
@@ -89,7 +72,7 @@
                 {{#if paidOrder}}
                 {{else}}
                     <form name="Newebpay" action="{{tradeData.PayGateWay}}" method="POST" class="d-inline">
-                        <button type="submit" class="btn btn-outline-success">前往付款</button>
+                        <button type="submit" class="btn btn-outline-custom">前往付款</button>
                         {{!-- MerchantID: --}}
                         <input type="hidden" name="MerchantID" value="{{tradeData.MerchantID}}"><br>
                         {{!-- TradeInfo: --}}

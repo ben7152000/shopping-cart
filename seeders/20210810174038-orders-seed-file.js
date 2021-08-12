@@ -15,7 +15,7 @@ module.exports = {
           phone: faker.phone.phoneNumber(),
           address: faker.address.streetAddress(),
           amount: faker.random.number(),
-          sn: faker.random.number(),
+          sn: faker.random.number().toString(),
           shipping_status: Math.floor(Math.random()),
           payment_status: Math.floor(Math.random()),
           createdAt: new Date(),

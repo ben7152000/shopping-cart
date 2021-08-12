@@ -14,7 +14,7 @@ const nodeMailer = {
       from: process.env.USER_MAIL,
       to: mail,
       subject,
-      text
+      html: text
     }
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -24,8 +24,8 @@ const nodeMailer = {
   // 寄驗證碼
   sendCaptchaMail: (captcha) => {
     return `
-    <h3>請於 Diving Park 註冊頁輸入您的驗證碼</h3>
-    <h1>${captcha}</h1>
+      <h3>請於 Diving Park 註冊頁輸入您的驗證碼</h3>
+      <h1>${captcha}</h1>
   `
   },
   // 訂單通知

@@ -63,22 +63,22 @@
                         {{#each cart.items}}
                             <div class="row no-gutters my-3">
                                 <div class="col-md-6">
-                                    <img src="{{this.dataValues.image}}" alt="{{this.dataValues.name}}">
+                                    <img src="{{this.image}}" alt="{{this.name}}">
                                 </div>
                                 <div class="col-md-6">
                                     <div class="card-body">
-                                        <h5 class="subtitle">{{this.dataValues.name}}</h5>
-                                        <h5 class="price my-2">${{this.dataValues.price}}</h5>
-                                        <p class="my-2">數量: {{this.CartItem.dataValues.quantity}}</p>
+                                        <h5 class="subtitle">{{this.name}}</h5>
+                                        <h5 class="price my-2">${{this.price}}</h5>
+                                        <p class="my-2">數量: {{this.CartItem.quantity}}</p>
                                         <div class="d-flex justify-content-between align-items-center">
 
-                                            <form action="/cartItem/{{this.CartItem.dataValues.id}}/add" method="POST">
+                                            <form action="/cartItem/{{this.CartItem.id}}/add" method="POST">
                                                 <button type="submit" class="btn btn-custom-small">+</button>
                                             </form>
-                                            <form action="/cartItem/{{this.CartItem.dataValues.id}}/sub" method="POST">
+                                            <form action="/cartItem/{{this.CartItem.id}}/sub" method="POST">
                                                 <button type="submit" class="btn btn-custom-small">-</button>
                                             </form>
-                                            <form action="/cartItem/{{this.CartItem.dataValues.id}}?_method=DELETE" method="POST">
+                                            <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
                                                 <button type="submit" class="btn btn-custom-small"><i class="fas fa-trash"></i></button>
                                             </form>
 

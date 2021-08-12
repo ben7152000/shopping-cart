@@ -39,7 +39,7 @@ const productController = {
           let cart = await Cart.findByPk(req.session.cartId, { include: 'items' })
           cart = cart || { items: [] }
           const totalPrice = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
-          return res.render('products', { products, cart, totalPrice, page, totalPage, prev, next })
+          return res.render('products', { products, cart: cart.toJSON(), totalPrice, page, totalPage, prev, next })
         }
       } else {
         // 登入後
