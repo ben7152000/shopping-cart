@@ -1,99 +1,66 @@
-const crypto = require('crypto')
 const db = require('../models')
 const Order = db.Order
 const OrderItem = db.OrderItem
 const Cart = db.Cart
+const Payment = db.Payment
 const nodeMailer = require('../utils/nodemailer')
-
-const URL = process.env.NEWEBPAY_URL
-const MerchantID = process.env.NEWEBPAY_MERCHANT_ID
-const HashKey = process.env.NEWEBPAY_HASH_KEY
-const HashIV = process.env.NEWEBPAY_HASH_IV
-const PayGateWay = 'https://ccore.spgateway.com/MPG/mpg_gateway'
-const ReturnURL = URL + '/spgateway/callback?from=ReturnURL'
-const NotifyURL = URL + '/spgateway/callback?from=NotifyURL'
-const ClientBackURL = URL + '/orders'
-
-// 串接資訊
-function genDataChain (TradeInfo) {
-  const results = []
-  for (const kv of Object.entries(TradeInfo)) {
-    results.push(`${kv[0]}=${kv[1]}`)
-  }
-  return results.join('&')
-}
-
-// 加密資訊
-function createMpgAesEncrypt (TradeInfo) {
-  const encrypt = crypto.createCipheriv('aes256', HashKey, HashIV)
-  const enc = encrypt.update(genDataChain(TradeInfo), 'utf8', 'hex')
-  return enc + encrypt.final('hex')
-}
-
-function createMpgAesDecrypt (TradeInfo) {
-  const decrypt = crypto.createDecipheriv('aes256', HashKey, HashIV)
-  decrypt.setAutoPadding(false)
-  const text = decrypt.update(TradeInfo, 'hex', 'utf8')
-  const plainText = text + decrypt.final('utf8')
-  const result = plainText.replace(/[\x00-\x20]+/g, '')
-  return result
-}
-
-function createMpgShaEncrypt (TradeInfo) {
-  const sha = crypto.createHash('sha256')
-  const plainText = `HashKey=${HashKey}&${TradeInfo}&HashIV=${HashIV}`
-
-  return sha.update(plainText).digest('hex').toUpperCase()
-}
-
-function getTradeInfo (Amt, Desc, email) {
-  const data = {
-    MerchantID: MerchantID, // 商店代號
-    RespondType: 'JSON', // 回傳格式
-    TimeStamp: Date.now(), // 時間戳記
-    Version: 1.5, // 串接程式版本
-    MerchantOrderNo: Date.now(), // 商店訂單編號
-    LoginType: 0, // 智付通會員
-    OrderComment: 'OrderComment', // 商店備註
-    Amt: Amt, // 訂單金額
-    ItemDesc: Desc, // 產品名稱
-    Email: email, // 付款人電子信箱
-    ReturnURL: ReturnURL, // 支付完成返回商店網址
-    NotifyURL: NotifyURL, // 支付通知網址/每期授權結果通知
-    ClientBackURL: ClientBackURL // 支付取消返回商店網址
-  }
-
-  const mpgAesEncrypt = createMpgAesEncrypt(data)
-  const mpgShaEncrypt = createMpgShaEncrypt(mpgAesEncrypt)
-
-  const tradeInfo = {
-    MerchantID: MerchantID, // 商店代號
-    TradeInfo: mpgAesEncrypt, // 加密後參數
-    TradeSha: mpgShaEncrypt,
-    Version: 1.5, // 串接程式版本
-    PayGateWay: PayGateWay,
-    MerchantOrderNo: data.MerchantOrderNo
-  }
-  return tradeInfo
-}
+const mpgData = require('../utils/mpgData')
 
 const orderController = {
   // 取得所有訂單
+  // get
   getOrders: async (req, res) => {
     try {
-      const orders = await Order.findAll({ include: 'items' })
-      return res.render('orders', {
-        orders
+      const ordersHavingProducts = await Order.findAll({
+        raw: true,
+        nest: true,
+        where: { UserId: req.user.id },
+        include: 'items'
       })
+      const orders = await Order.findAll({
+        raw: true,
+        nest: true,
+        where: { UserId: req.user.id }
+      })
+      orders.forEach(order => {
+        order.orderProducts = []
+      })
+      ordersHavingProducts.forEach(product => {
+        const index = orders.findIndex(order => order.id === product.id)
+        if (index === -1) return
+        orders[index].orderProducts.push(product.orderProducts)
+      })
+      return res.render('orders', { orders })
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  // 個別訂單
+  // get
+  getOrder: async (req, res) => {
+    try {
+      const order = await Order.findByPk(req.params.id, { include: 'items' })
+      if (order.toJSON().payment_status === '0') {
+        const tradeData = mpgData.getData(order.amount, 'Diving Park-精選商品', req.user.email)
+        await order.update({ sn: tradeData.MerchantOrderNo.toString() })
+        return res.render('order', { order: order.toJSON(), tradeData })
+      } else {
+        const paidOrder = true
+        return res.render('order', { order: order.toJSON(), paidOrder })
+      }
     } catch (e) {
       console.log(e)
     }
   },
   // 建立訂單
+  // post
+  // name, address, phone, amount, shipping_status, payment_status
   postOrder: async (req, res) => {
     try {
       const cart = await Cart.findByPk(req.body.cartId, { include: 'items' })
+      // 建立訂單
       const order = await Order.create({
+        UserId: req.user.id,
         name: req.body.name,
         address: req.body.address,
         phone: req.body.phone,
@@ -112,14 +79,24 @@ const orderController = {
         results.push(orderItem)
       }
 
-      nodeMailer.sendMail('ben7152000@gmail.com', 'hi', 'hihi')
+      // 發送 mail
+      const email = req.user.email
+      const subject = `[TEST]Diving Park 訂購編號:${order.id} 成立，請把握時間付款`
+      const status = '未出貨 / 未付款'
+      const msg = '請點擊付款連結並使用測試信用卡付款! 感謝配合!'
 
-      return res.redirect('/order')
+      nodeMailer.sendMail(email, subject, nodeMailer.orderMail(order, status, msg))
+
+      // 清空購物車
+      await cart.destroy()
+      req.session.cartId = ''
+      return res.redirect(`/order/${order.id}`)
     } catch (e) {
       console.log(e)
     }
   },
   // 刪除訂單
+  // post
   cancelOrder: async (req, res) => {
     try {
       const order = await Order.findByPk(req.params.id)
@@ -134,10 +111,11 @@ const orderController = {
     }
   },
   // 取得付款頁面
+  // get
   getPayment: async (req, res) => {
     try {
-      const order = await Order.findByPk(req.params.id)
-      const tradeInfo = getTradeInfo(order.amount, '產品名稱', 'ben7152000@gmail.com')
+      const order = await Order.findByPk(req.params.id, { include: 'items' })
+      const tradeInfo = mpgData.getData(order.amount, '產品名稱', req.user.email)
       order.update({
         ...req.body,
         sn: tradeInfo.MerchantOrderNo
@@ -150,15 +128,34 @@ const orderController = {
   // 交易後回傳
   spgatewayCallback: async (req, res) => {
     try {
-      const data = JSON.parse(createMpgAesDecrypt(req.body.TradeInfo))
+      const data = JSON.parse(mpgData.decryptData(req.body.TradeInfo))
+      // 訂單
       const order = await Order.findAll({
         where: { sn: data.Result.MerchantOrderNo }
       })
-      await order[0].update({
-        ...req.body,
-        payment_status: 1
+      // 建立 payment
+      await Payment.create({
+        OrderId: order.id,
+        payment_method: data.Result.PaymentMethod ? data.Result.PaymentMethod : data.Result.PaymentType,
+        isSuccess: data.Status === 'SUCCESS',
+        failure_message: data.Message,
+        payTime: data.Result.PayTime
       })
-      return res.redirect('/orders')
+      if (data.Status === 'SUCCESS') {
+        await order[0].update({
+          ...req.body,
+          payment_status: 1
+        })
+
+        // 發送 mail
+        const email = req.user.email
+        const subject = `[TEST]Diving Park 訂單編號:${order.id} 付款成功!`
+        const status = '未出貨 / 已付款'
+        const msg = '近期內會安排出貨 再麻煩注意電子郵件!'
+        nodeMailer.sendMail(email, subject, nodeMailer.sendPayMail(order, status, msg))
+      }
+
+      return res.redirect(`/orders/${order.id}`)
     } catch (e) {
       console.log(e)
     }
