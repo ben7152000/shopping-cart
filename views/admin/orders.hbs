@@ -1,0 +1,63 @@
+<div class="row mt-3">
+    <div class="col-md-2">
+        <h3 style="padding-left:10px;">後台管理</h3>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><a href="/admin/products">商品列表</a></li>
+            <li class="list-group-item"><a href="/admin/orders">訂單列表</a></li>
+            <li class="list-group-item"><a href="/admin/authority">權限管理</a></li>
+        </ul>
+    </div>
+    <div class="col-md-10">
+        {{> message}}
+        <table class="table table-primary table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Sn</th>
+                <th scope="col">Name</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Shipping_status</th>
+                <th scope="col">Payment_status</th>
+                <th scope="col">Operate</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each orders}}
+                <tr>
+                    <th scope="row">{{this.id}}</th>
+                    <td>{{this.sn}}</td>
+                    <td>{{this.name}}</td>
+                    <td>{{this.amount}}</td>
+                    <td>
+                        {{#equal this.shipping_status '1'}}已出貨{{/equal}}
+                        {{#equal this.shipping_status '0'}}未出貨{{/equal}}
+                        {{#equal this.shipping_status '-1'}}已取消{{/equal}}
+                    </td>
+                    <td>
+                        {{#equal this.payment_status '1'}}已付款{{/equal}}
+                        {{#equal this.payment_status '0'}}未付款{{/equal}}
+                    </td>
+                    <td>
+                        <a href="/admin/orders/{{this.id}}" class="btn btn-info">詳細內容</a>
+                        <form action="/admin/orders/{{this.id}}/ship" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-success" onclick="return confirmShip()"
+                                {{#equal this.shipping_status '1'}}disabled{{/equal}}
+                                {{#equal this.shipping_status '-1'}}disabled{{/equal}}
+                            >訂單出貨</button>
+                        </form>
+                        {{#equal this.shipping_status '-1'}}
+                            <form action="/admin/orders/{{this.id}}/recover" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-primary" onclick="return confirmRecover()">恢復訂單</button>
+                            </form>
+                        {{else}}
+                            <form action="/admin/orders/{{this.id}}/cancel" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-warning" onclick="return confirmCancel()">訂單取消</button>
+                            </form>
+                        {{/equal}}
+                    </td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>

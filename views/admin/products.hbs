@@ -1,0 +1,78 @@
+<div class="row mt-3">
+    <div class="col-md-2">
+        <h3 style="padding-left:10px;">後台管理</h3>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><a href="/admin/products">商品列表</a></li>
+            <li class="list-group-item"><a href="/admin/orders">訂單列表</a></li>
+            <li class="list-group-item"><a href="/admin/authority">權限管理</a></li>
+        </ul>
+    </div>
+    <div class="col-md-10">
+        {{> message}}
+        {{#if status}}
+        <form action="/admin/products/{{product.id}}?_method=PUT" method="POST" enctype="multipart/form-data">
+            <h5><span style="background-color:chartreuse;">編輯商品</span></h5>
+        {{else}}
+        <form action="/admin/products" method="POST" enctype="multipart/form-data">
+            <h5><span style="background-color: aqua;">新增商品</span></h5>
+        {{/if}}
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="name">Name</span>
+            <input type="text" class="form-control"  name="name" value="{{product.name}}" required>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="price">Price</span>
+            <input type="number" class="form-control" name="price" value="{{product.price}}" required>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="image">Image</span>
+            <input type="file" class="form-control" name="image">
+        </div>
+        {{#if status}}
+            <img src="{{product.image}}" alt="" class="mb-3">
+        {{else}}
+        {{/if}}
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="description">Description</span>
+            <textarea class="form-control" name="description" id="description">{{product.description}}</textarea>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inventory">Inventory</span>
+            <input type="number" class="form-control" name="inventory" value="{{product.inventory}}" required>
+        </div>
+        {{#if status}}
+            <button type="submit" class="btn btn-outline-success mb-3">確定編輯</button>
+        {{else}}
+            <button type="submit" class="btn btn-outline-info mb-3">確定新增</button>
+        {{/if}}
+    </form>
+        <table class="table table-dark table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Inventory</th>
+                <th scope="col">Operate</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each products}}
+                <tr>
+                    <th scope="row">{{this.id}}</th>
+                    <td>{{this.name}}</td>
+                    <td>{{this.price}}</td>
+                    <td>{{this.inventory}}</td>
+                    <td>
+                        {{!-- <a href="/admin/products/{{this.id}}" class="btn btn-info">詳細內容</a> --}}
+                        <a href="/admin/products/{{this.id}}" class="btn btn-success">編輯</a>
+                        <form action="/admin/products/{{this.id}}?_method=DELETE" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-danger" onclick="return confirmDelete()">刪除</button>
+                        </form>
+                    </td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>

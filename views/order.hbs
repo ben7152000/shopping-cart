@@ -1,0 +1,109 @@
+<style>
+    .step {
+        border: #3fb618 1px solid;
+        border-radius: 30px;
+        padding: 8px 12px;
+        color: black;
+    }
+
+    .step-now {
+        background-color: #3fb618;
+    }
+
+    .line {
+        border-top: #3fb618 1px solid;
+        margin-top: 10px;
+        width: 300px;
+    }
+
+    h3 {
+        {{#if paidOrder}}
+            color:red;
+        {{else}}
+            color:deepskyblue;
+        {{/if}}
+    }
+</style>
+
+<div class="mt-5 mx-5">
+    {{>message}}
+    <div class="d-flex justify-content-center mt-5 mb-3">
+        <div>
+            <span class="step">Step1</span>
+            <div class="mt-3 ml-2">購物車</div>
+        </div>
+        <div class="line"></div>
+        <div>
+            <span class="step mb-3">Step2</span>
+            <div class="mt-3">填寫資料</div>
+        </div>
+        <div class="line"></div>
+        <div>
+            <span class="step step-now mb-3">Step3</span>
+            <div class="mt-3 mr-3">成立訂單</div>
+            <div class="ml-2">&付款</div>
+        </div>
+    </div>
+    {{!-- order information --}}
+    <ul class="list-group mb-3">
+        <li class="list-group-item bg-light text-center">
+            {{#if paidOrder}}
+                <h3 class="font-weight-bold">訂單付款成功 Email 已寄出給您!</h3>
+            {{else}}
+                <h3 class="font-weight-bold">訂單成立 Email 已寄出給您!</h3>
+            {{/if}}
+            <h4>您的訂單編號為 {{order.id}} ，請確認下方訂單資訊!</h4>
+        </li>
+        <li class="list-group-item">
+            <h5 class="font-weight-bold">訂單資訊</h5>
+            <div>訂單編號: {{order.id}}</div>
+            <div>下單時間: {{formatTime order.createdAt}}</div>
+            <div>訂單狀態:
+                {{#equal order.shipping_status '1'}}已出貨{{/equal}}
+                {{#equal order.shipping_status '0'}}未出貨{{/equal}}
+                {{#equal order.shipping_status '-1'}}已取消{{/equal}}
+            </div>
+        </li>
+        <li class="list-group-item">
+            <h5 class="font-weight-bold">顧客資訊</h5>
+            <div>姓名: {{order.name}}</div>
+            <div>電話: {{order.phone}}</div>
+        </li>
+        <li class="list-group-item">
+            <h5 class="font-weight-bold">送貨資訊</h5>
+            <div>收件人姓名: {{order.name}}</div>
+            <div>收件人電話號碼: {{order.phone}}</div>
+            <div>送貨方式: XXX</div>
+            <div>地址: {{order.address}}</div>
+        </li>
+        <li class="list-group-item">
+            <div class="d-flex justify-content-between">
+                <div class="info">
+                    <h5 class="font-weight-bold">付款資訊</h5>
+                    <div>付款金額: {{order.amount}}</div>
+                    <div>付款狀態:
+                        {{#equal order.payment_status '1'}}已付款{{/equal}}
+                        {{#equal order.payment_status '0'}}未付款{{/equal}}
+                    </div>
+                </div>
+                {{#if paidOrder}}
+                {{else}}
+                    <form name="Newebpay" action="{{tradeData.PayGateWay}}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-outline-success">前往付款</button>
+                        {{!-- MerchantID: --}}
+                        <input type="hidden" name="MerchantID" value="{{tradeData.MerchantID}}"><br>
+                        {{!-- TradeInfo: --}}
+                        <input type="hidden" name="TradeInfo" value="{{tradeData.TradeInfo}}"><br>
+                        {{!-- TradeSha: --}}
+                        <input type="hidden" name="TradeSha" value="{{tradeData.TradeSha}}"><br>
+                        {{!-- Version: --}}
+                        <input type="hidden" name="Version" value="{{tradeData.Version}}"><br>
+                    </form>
+                {{/if}}
+            </div>
+        </li>
+    </ul>
+    <div class="d-flex justify-content-end mb-5">
+        <a href="/order" class="btn btn-outline-dark">回到訂單頁面</a>
+    </div>
+</div>

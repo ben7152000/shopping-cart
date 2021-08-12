@@ -1,0 +1,65 @@
+<style>
+    .step {
+        border: #3fb618 1px solid;
+        border-radius: 30px;
+        padding: 8px 12px;
+        color: black;
+    }
+
+    .step-now {
+        background-color: #3fb618;
+    }
+
+    .line {
+        border-top: #3fb618 1px solid;
+        margin-top: 10px;
+        width: 300px;
+    }
+</style>
+
+<div class="mt-5">
+    {{>message}}
+    <div class="d-flex justify-content-center mb-3">
+        <div>
+            <span class="step">Step1</span>
+            <div class="mt-3 ml-2">購物車</div>
+        </div>
+        <div class="line"></div>
+        <div>
+            <span class="step step-now mb-3">Step2</span>
+            <div class="mt-3">填寫資料</div>
+        </div>
+        <div class="line"></div>
+        <div>
+            <span class="step mb-3">Step3</span>
+            <div class="mt-3 mr-3">成立訂單</div>
+            <div class="ml-2">&付款</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 m-auto">
+        <form action="/order/data" method="POST">
+            <div class="form-group">
+                <label for="name">姓名</label>
+                <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
+            </div>
+            <div class="form-group">
+                <label for="phone">電話</label>
+                <input type="text" class="form-control" id="phone" placeholder="Enter phone" name="phone">
+            </div>
+            <div class="form-group">
+                <label for="address">收件地址</label>
+                <input type="text" class="form-control" id="address" placeholder="Enter address" name="address">
+            </div>
+            <input type="hidden" name="cartId" value="{{cartId}}">
+            <input type="hidden" name="amount" value="{{amount}}">
+            <input type="hidden" name="shipping_status" value="0">
+            <input type="hidden" name="payment_status" value="0">
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-outline-success mt-3">下一步 : 成立訂單&付款</button>
+            </div>
+        </form>
+    </div>
+</div>

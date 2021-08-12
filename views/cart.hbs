@@ -1,43 +1,80 @@
-<h1>顯示購物車</h1>
+<style>
+    .step {
+        border:#3fb618 1px solid;
+        border-radius:30px;
+        padding:8px 12px;
+        color: black;
+    }
+    .step-now {
+        background-color: #3fb618;
+    }
+    .line {
+        border-top:#3fb618 1px solid;
+        margin-top: 10px;
+        width: 300px;
+    }
+</style>
 
-<div>
+<div class="mt-5">
+    {{>message}}
+    <div class="d-flex justify-content-center mt-5 mb-3">
+        <div>
+            <span class="step step-now">Step1</span>
+            <div class="mt-3 ml-2">購物車</div>
+        </div>
+        <div class="line"></div>
+        <div>
+            <span class="step mb-3">Step2</span>
+            <div class="mt-3">填寫資料</div>
+        </div>
+        <div class="line"></div>
+        <div>
+            <span class="step mb-3">Step3</span>
+            <div class="mt-3 mr-3">成立訂單</div>
+            <div class="ml-2">&付款</div>
+        </div>
+    </div>
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">#</th>
-            <th scope="col">Price</th>
-            <th scope="col">quantity</th>
-            <th scope="col">Subtotal</th>
-            <th scope="col">#</th>
+            <th scope="col">商品資訊</th>
+            <th scope="col" class="text-center">單件價格</th>
+            <th scope="col" class="text-center">數量</th>
+            <th scope="col" class="text-center">小計</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
-        {{#each cart.items}}
+        {{#each cart.cartProducts}}
             <tr>
                 <td>
-                    <div style="display: flow-root;">
-                        <img src="{{this.dataValues.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
-                        <span>{{this.dataValues.name}}</span>
+                    <div>
+                        <img src="{{this.image}}" class="card-img" alt="..." style="height: 100px;width: auto;">
+                        <span>{{this.name}}</span>
                     </div>
                 </td>
-                <td><p>$ {{this.dataValues.price}}</p></td>
-                <td>
-                    <div style="display: flex;">
-                        <form action="/cartItem/{{this.CartItem.dataValues.id}}/add" method="POST">
+                <td class="text-center align-middle">
+                    <div>$ {{this.price}}</div>
+                </td>
+                <td class="align-middle">
+                    <div class="d-flex justify-content-center">
+                        <form action="/cartItem/{{this.CartItem.id}}/add" method="POST">
                             <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
                         </form>
                         <span style="margin: 0 20px;">
-                            {{this.CartItem.dataValues.quantity}}
+                            {{this.CartItem.quantity}}
                         </span>
-                        <form action="/cartItem/{{this.CartItem.dataValues.id}}/sub" method="POST">
+                        <form action="/cartItem/{{this.CartItem.id}}/sub" method="POST">
                             <button type="submit" class="btn btn-sm btn-outline-secondary">-</button>
                         </form>
                     </div>
                 </td>
-                <td>{{this.dataValues.price}} * {{this.CartItem.dataValues.quantity}}</td>
-                <td>
-                    <form action="/cartItem/{{this.CartItem.dataValues.id}}?_method=DELETE" method="POST">
-                        <button type="submit" class="btn btn-link">
+                <td class="text-center align-middle">
+                    $ {{multiply this.price this.CartItem.quantity}}
+                </td>
+                <td class="text-center align-middle">
+                    <form action="/cartItem/{{this.CartItem.id}}?_method=DELETE" method="POST">
+                        <button type="submit" class="btn btn-link" style="color: red;">
                             <i class="fas fa-trash"></i>
                         </button>
                     </form>
@@ -47,36 +84,16 @@
         <tr>
             <td></td>
             <td></td>
-            <td style="text-align: right;"><h2>Total: </h2></td>
-            <td><h2>{{totalPrice}}</h2></td>
-            <td></td>
+            <td style="text-align: right;">
+                <h2>Total: </h2>
+            </td>
+            <td>
+                <h2>$ {{totalPrice}}</h2>
+            </td>
+            <td>
+                <a href="/order/data" class="btn btn-outline-success">下一步 : 填寫資料</a>
+            </td>
         </tr>
         </tbody>
     </table>
-
-</div>
-
-<div class="row">
-    <div class="col-md-4">
-        <form action="order" method="POST">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
-            </div>
-            <div class="form-group">
-                <label for="phone">Phone</label>
-                <input type="text" class="form-control" id="phone" placeholder="Enter phone" name="phone">
-            </div>
-            <div class="form-group">
-                <label for="address">Address</label>
-                <input type="text" class="form-control" id="address" placeholder="Enter address" name="address">
-            </div>
-            <input type="hidden" name="cartId" value="{{cart.dataValues.id}}">
-            <input type="hidden" name="amount" value="{{totalPrice}}">
-            <input type="hidden" name="shipping_status" value="0">
-            <input type="hidden" name="payment_status" value="0">
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
-
 </div>

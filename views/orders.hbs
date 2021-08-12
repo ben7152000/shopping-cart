@@ -1,51 +1,41 @@
+<div>
+    {{> message}}
+</div>
 {{#each orders}}
-    <div class="row">
+    <div class="row mt-4">
         <div class="col-md-5">
+            <h3 class="ml-2 font-weight-bold text-primary">訂單編號: {{this.id}}</h3>
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col">Product</th>
-                    <th scope="col">quantity</th>
-                    <th scope="col">Subtotal</th>
+                    <th scope="col">商品名稱</th>
+                    <th scope="col">單價</th>
+                    <th scope="col">數量</th>
+                    <th scope="col">小計</th>
                 </tr>
                 </thead>
                 <tbody>
-                {{#each this.dataValues.items}}
+                {{#each this.orderProducts}}
                     <tr>
-                        <td>{{this.dataValues.name}}</td>
-                        <td>{{this.OrderItem.dataValues.quantity}}</td>
-                        <td>{{this.dataValues.price}}</td>
+                        <td>{{this.name}}</td>
+                        <td>{{this.price}}</td>
+                        <td>{{this.OrderItem.quantity}}</td>
+                        <td>{{multiply this.price this.OrderItem.quantity}}</td>
                     </tr>
                 {{/each}}
                 <tr>
+                    <td><a href="/order/{{this.id}}" class="btn btn-info">詳細資訊</a></td>
                     <td></td>
-                    <td style="text-align: right;"><h4>Total: </h4></td>
-                    <td><h4>{{this.dataValues.amount}}</h4></td>
+                    <td style="text-align: right;">
+                        <h4>Total: </h4>
+                    </td>
+                    <td>
+                        <h4>{{this.amount}}</h4>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-
-        <div>
-            <ul>
-                <li>{{this.dataValues.id}}</li>
-                <li>name: {{this.dataValues.name}}</li>
-                <li>address: {{this.dataValues.address}}</li>
-                <li>phone: {{this.dataValues.phone}}</li>
-                <li>shipping_status: {{this.dataValues.shipping_status}}</li>
-                <li>payment_status: {{this.dataValues.payment_status}}</li>
-            </ul>
-
-            <div style="display: flex; justify-content: space-around;min-width: 300px;">
-                <form action="/order/{{this.dataValues.id}}/cancel" method="POST">
-                    <button type="submit" class="btn btn-primary">取消訂單</button>
-                </form>
-
-                <a href="/order/{{this.dataValues.id}}/payment"><button class="btn btn-primary">立即付款</button></a>
-            </div>
-        </div>
-
     </div>
-
-    <hr/>
+    <hr>
 {{/each}}

@@ -8,6 +8,7 @@ const session = require('express-session')
 const methodOverride = require('method-override')
 const cors = require('cors')
 const passport = require('passport')
+const flash = require('connect-flash')
 
 const app = express()
 const PORT = process.env.PORT || 8081
@@ -30,6 +31,7 @@ app.use(methodOverride('_method'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cookieParser())
+app.use(flash())
 app.use(session({
   secret: 'Ben',
   name: 'Ben',
@@ -42,6 +44,12 @@ app.use((req, res, next) => {
     req.headers.authorization = `Bearer ${req.session.token}`
     return next()
   }
+  return next()
+})
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg')
+  res.locals.danger_msg = req.flash('danger_msg')
   return next()
 })
 app.use(passport.initialize())

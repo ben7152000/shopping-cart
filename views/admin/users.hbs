@@ -1,0 +1,46 @@
+<div class="row mt-3">
+    <div class="col-md-2">
+        <h3 style="padding-left:10px;">後台管理</h3>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><a href="/admin/products">商品列表</a></li>
+            <li class="list-group-item"><a href="/admin/orders">訂單列表</a></li>
+            <li class="list-group-item"><a href="/admin/authority">權限管理</a></li>
+        </ul>
+    </div>
+    <div class="col-md-10">
+        {{> message}}
+        <table class="table table-info table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Email</th>
+                <th scope="col">role</th>
+                <th scope="col">Operate</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#each users}}
+                <tr>
+                    <th scope="row">{{this.id}}</th>
+                    <td>{{this.email}}</td>
+                    <td>{{this.role}}</td>
+                    <td>
+                        {{#equal ../user.id this.id}}
+                        {{else}}
+                            {{#equal this.role 'user'}}
+                                <form action="/admin/authority/{{this.id}}" method="POST">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirmAuthAdmin()">change to ADMIN</button>
+                                </form>
+                            {{else}}
+                                <form action="/admin/authority/{{this.id}}" method="POST">
+                                    <button type="submit" class="btn btn-warning" onclick="return confirmAuthUser()">change to User</button>
+                                </form>
+                            {{/equal}}
+                        {{/equal}}
+                    </td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>

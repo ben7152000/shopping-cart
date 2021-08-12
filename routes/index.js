@@ -9,9 +9,9 @@ const admin = require('./modules/admin')
 router.use('/order', orders)
 router.use('/cart', carts)
 router.use('/cartItem', cartItems)
-router.use('/product', products)
+router.use('/products', products)
 router.use('/users', users)
 router.use('/admin', admin)
-router.use('/', (req, res) => res.redirect('/product'))
+router.use('/', (req, res) => res.redirect('/products'))
 
 module.exports = router
