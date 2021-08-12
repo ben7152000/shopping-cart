@@ -1,34 +1,35 @@
 <div class="row mt-5">
     <div class="col-md-6 m-auto">
         <div class="card card-body">
-            <h2 class="text-center mt-3">註冊帳號</h2>
-            <form action="/users/register/captcha" method="POST">
+            <h2 class="text-center my-3">註冊帳號</h2>
+            {{> message}}
+            <form action="/users/sign-up/captcha" method="POST">
                 <div class="form-group mb-3">
                     <label for="email">Email</label>
-                    <input type="email" name="email" id="email" class="form-control" placeholder="enter Email" value="{{email}}" required>
-                    <button type="submit" class="btn btn-outline-success mt-2">發送驗證碼至信箱</button>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Email ..." value="{{email}}" required>
+                    <button type="submit" class="btn btn-outline-success mt-3">發送驗證碼至信箱</button>
                 </div>
             </form>
-            <form action="/users/register" method="POST">
+            <form action="/users/sign-up" method="POST">
                 <input type="hidden" name="email" value="{{email}}">
                 <div class="form-group mb-3">
                     <label for="captcha">輸入驗證碼</label>
-                    <input type="password" name="captcha" id="captcha" class="form-control" placeholder="enter captcha"
-                           style="margin-top:10px;" required>
+                    <input type="password" name="captcha" id="captcha" class="form-control " placeholder="Captcha ..." required>
                 </div>
                 <div class="form-group mb-3">
                     <label for="password">Password</label>
-                    <input type="password" name="password" id="password" class="form-control" placeholder="enter Password" required>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Password ..." required>
                 </div>
                 <div class="form-group mb-3">
-                    <label for="checkPassword">check Password</label>
-                    <input type="password" name="checkPassword" id="checkPassword" class="form-control"
-                           placeholder="check Password" required>
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" name="confirmPassword" id="confirmPassword" class="form-control"
+                           placeholder="Confirm Password ..." required>
                 </div>
-                <button type="submit" class="btn btn-info btn-block">Register</button>
-                <a href="/users/google" class="btn btn-success btn-block mt-2">Google Login</a>
+                <button type="submit" class="btn btn-custom w-100">SignUp</button>
             </form>
-            <p class="lead mt-3">已註冊? <a href="/users/login">前往登入</a></p>
+            <p class="mt-3">已註冊 ?
+                <a href="/users/sign-in">前往登入</a>
+            </p>
         </div>
     </div>
 </div>

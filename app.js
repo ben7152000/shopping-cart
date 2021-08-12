@@ -16,13 +16,13 @@ dotenv.config()
 
 const routes = require('./routes')
 
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'hbs')
 app.engine('.hbs', exphbs({
   extname: '.hbs',
   defaultLayout: 'main',
   helpers: require('./config/handlebars-helpers')
 }))
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'hbs')
 
 app.use(cors())
 app.use(morgan('dev'))

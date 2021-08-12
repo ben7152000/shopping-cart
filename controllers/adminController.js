@@ -219,10 +219,7 @@ const adminController = {
   // get
   getUsers: async (req, res) => {
     try {
-      const users = await User.findAll({
-        raw: true,
-        nest: true
-      })
+      const users = await User.findAll({ raw: true, nest: true })
       return res.render('admin/users', { users })
     } catch (e) {
       console.log(e)

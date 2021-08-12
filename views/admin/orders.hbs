@@ -1,10 +1,10 @@
 <div class="row mt-3">
     <div class="col-md-2">
-        <h3 style="padding-left:10px;">後台管理</h3>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item"><a href="/admin/products">商品列表</a></li>
-            <li class="list-group-item"><a href="/admin/orders">訂單列表</a></li>
-            <li class="list-group-item"><a href="/admin/authority">權限管理</a></li>
+        <h3 class="ml-2">後台管理</h3>
+        <ul class="list-group">
+            <li class="list-group-item m-0"><a href="/admin/products">商品列表</a></li>
+            <li class="list-group-item m-0"><a href="/admin/orders">訂單列表</a></li>
+            <li class="list-group-item m-0"><a href="/admin/authority">權限管理</a></li>
         </ul>
     </div>
     <div class="col-md-10">
@@ -12,32 +12,32 @@
         <table class="table table-primary table-striped">
             <thead>
             <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Sn</th>
-                <th scope="col">Name</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Shipping_status</th>
-                <th scope="col">Payment_status</th>
-                <th scope="col">Operate</th>
+                <th scope="col" class="text-center">Id</th>
+                <th scope="col" class="text-center">流水號</th>
+                <th scope="col" class="text-center">名字</th>
+                <th scope="col" class="text-center">價錢</th>
+                <th scope="col" class="text-center">出貨狀態</th>
+                <th scope="col" class="text-center">付款狀態</th>
+                <th scope="col" class="text-center">操作</th>
             </tr>
             </thead>
             <tbody>
             {{#each orders}}
-                <tr>
-                    <th scope="row">{{this.id}}</th>
-                    <td>{{this.sn}}</td>
-                    <td>{{this.name}}</td>
-                    <td>{{this.amount}}</td>
-                    <td>
+                <tr style="height: 80px">
+                    <td class="text-center align-middle">{{this.id}}</td>
+                    <td class="text-center align-middle">{{this.sn}}</td>
+                    <td class="text-center align-middle">{{this.name}}</td>
+                    <td class="text-center align-middle">{{this.amount}}</td>
+                    <td class="text-center align-middle">
                         {{#equal this.shipping_status '1'}}已出貨{{/equal}}
                         {{#equal this.shipping_status '0'}}未出貨{{/equal}}
                         {{#equal this.shipping_status '-1'}}已取消{{/equal}}
                     </td>
-                    <td>
+                    <td class="text-center align-middle">
                         {{#equal this.payment_status '1'}}已付款{{/equal}}
                         {{#equal this.payment_status '0'}}未付款{{/equal}}
                     </td>
-                    <td>
+                    <td class="text-center align-middle">
                         <a href="/admin/orders/{{this.id}}" class="btn btn-info">詳細內容</a>
                         <form action="/admin/orders/{{this.id}}/ship" method="POST" class="d-inline">
                             <button type="submit" class="btn btn-success" onclick="return confirmShip()"

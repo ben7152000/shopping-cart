@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+/* 變數 */
+:root {
+    --primary: #73c0f4;
+    --secondary: #f3e4c6;
+    --dark: #000;
+    --light: #fff;
+    --bg: #e6eff3;
+}
+
+/* 全局 */
+html,
+body {
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 1px;
+    color: var(--dark);
+    background: var(--bg);
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.container-customer {
+    max-width: 1440px;
+}
+
+a {
+    color: var(--dark);
+    transition: .5s;
+}
+
+a:hover {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+li,
+ol {
+    list-style: none;
+}
+
+img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+.ellipsis{
+    overflow:hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* 組件 */
+.title {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.btn-custom {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--light);
+    background: var(--primary);
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: .5s;
+}
+
+.btn-custom:hover {
+    background: var(--secondary);
+}
+
+.btn-outline-custom {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    background: var(--light);
+    border: 1px solid var(--primary);
+    outline: none;
+    cursor: pointer;
+    transition: .5s;
+}
+
+.btn-outline-custom:hover {
+    color: var(--light);
+    background: var(--primary);
+}
+
+.btn-custom-small {
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--light);
+    background: var(--primary);
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: .5s;
+}
+
+.btn-custom-small:hover {
+    background: var(--secondary);
+}
+
+/* navbar */
+.navbar {
+    background: var(--light);
+    padding: 15px 30px;
+}
+
+.navbar .navbar-brand {
+    font-size: 2rem;
+    font-weight: 900;
+}
+
+.navbar .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.navbar .navbar-user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+/* 購物車 */
+.step {
+    border:1px solid var(--primary);
+    border-radius:30px;
+    padding:8px 12px;
+    color: var(--dark);
+}
+.step-now {
+    background-color: var(--primary);
+}
+.line {
+    border-top:1px solid var(--primary);
+    margin-top: 10px;
+    width: 300px;
+}
+
+/* 管理者訂單 */
+.admin-order {
+    background: var(--light);
+    padding: 15px;
+}

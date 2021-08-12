@@ -1,13 +1,14 @@
 <div class="row mt-5">
     <div class="col-md-6 m-auto">
         <div class="card card-body">
-            <h2 class="text-center mt-3">
+            <h2 class="text-center my-3">
                 {{#if front}}
-                    前台
+                    前台登入
                 {{else}}
-                    後台
+                    後台登入
                 {{/if}}
-                SignIn</h2>
+            </h2>
+            {{> message}}
             {{#if front}}
             <form action="/users/sign-in" method="POST">
             {{else}}
@@ -15,31 +16,28 @@
             {{/if}}
             <div class="form-group mb-3">
                 <label for="email">Email</label>
-                <input type="email" name="email" id="email" class="form-control" placeholder="enter Email"
+                <input type="email" name="email" id="email" class="form-control" placeholder="Email ..."
                        value="{{ email }}" required>
             </div>
             <div class="form-group mb-3">
                 <label for="password">Password</label>
-                <input type="password" name="password" id="password" class="form-control" placeholder="enter Password"
+                <input type="password" name="password" id="password" class="form-control" placeholder="Password ..."
                        required>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">SignIn</button>
-            {{#if front}}
-                <a href="/users/google" class="btn btn-success btn-block mt-2">Google Login</a>
-            {{/if}}
+            <button type="submit" class="btn btn-custom w-100">SignIn</button>
         </form>
             {{#if front}}
-                <div class="d-flex justify-content-between">
-                    <p class="lead mt-3">
-                        尚未註冊?<a href="/users/sign-up">前往註冊</a>
+                <div class="d-flex justify-content-between my-2">
+                    <p class="mt-3">
+                        尚未註冊 ? <a href="/users/sign-up">前往註冊</a>
                     </p>
-                    <p class="lead mt-3">
+                    <p class="mt-3">
                         <a href="/admin/sign-in">後台登入</a>
                     </p>
                 </div>
             {{else}}
-                <div class="d-flex justify-content-end">
-                    <p class="lead mt-3">
+                <div class="d-flex justify-content-end my-2">
+                    <p class="mt-3">
                         <a href="/users/sign-in">前台登入</a>
                     </p>
                 </div>

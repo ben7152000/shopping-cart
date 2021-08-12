@@ -11,12 +11,14 @@ const jwtOptions = {
   passReqToCallback: true
 }
 
-const jwtStrategy = new JwtStrategy(jwtOptions, async (payload, cb) => {
+const jwtStrategy = new JwtStrategy(jwtOptions, async (req, payload, cb) => {
   try {
     const user = await User.findByPk(payload.id)
     if (!user) {
       return cb(null, false)
     }
+    req.user = user.toJSON()
+    req.session.user = user.toJSON()
     return cb(null, user)
   } catch (e) {
     console.log(e)

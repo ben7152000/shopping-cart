@@ -41,13 +41,32 @@ const orderController = {
     try {
       const order = await Order.findByPk(req.params.id, { include: 'items' })
       if (order.toJSON().payment_status === '0') {
-        const tradeData = mpgData.getData(order.amount, 'Diving Park-精選商品', req.user.email)
-        await order.update({ sn: tradeData.MerchantOrderNo.toString() })
+        const tradeData = mpgData.getData(order.amount, 'Diving Park-精選商品', req.session.user.email)
+        await order.update({ sn: tradeData.MerchantOrderNo })
         return res.render('order', { order: order.toJSON(), tradeData })
       } else {
         const paidOrder = true
         return res.render('order', { order: order.toJSON(), paidOrder })
       }
+    } catch (e) {
+      console.log(e)
+    }
+  },
+  // 訂購清單
+  // get
+  fillOrderData: async (req, res) => {
+    try {
+      const cart = await Cart.findOne({
+        where: { UserId: req.session.user.id },
+        include: 'items'
+      })
+      if (!cart || !cart.items.length) {
+        req.flash('warning_msg', '購物車空空的唷!')
+        return res.redirect('/cart')
+      }
+      const cartId = cart.id
+      const amount = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
+      return res.render('orderData', { cartId, amount })
     } catch (e) {
       console.log(e)
     }
@@ -59,8 +78,8 @@ const orderController = {
     try {
       const cart = await Cart.findByPk(req.body.cartId, { include: 'items' })
       // 建立訂單
-      const order = await Order.create({
-        UserId: req.user.id,
+      let order = await Order.create({
+        UserId: req.session.user.id,
         name: req.body.name,
         address: req.body.address,
         phone: req.body.phone,
@@ -68,19 +87,21 @@ const orderController = {
         payment_status: req.body.payment_status,
         amount: req.body.amount
       })
-      const results = []
-      for (let i = 0; i < cart.items.length; i++) {
-        const orderItem = await OrderItem.create({
-          OrderId: order.id,
-          ProductId: cart.items[i].id,
-          price: cart.items[i].price,
-          quantity: cart.items[i].CartItem.quantity
-        })
-        results.push(orderItem)
-      }
+      order = order.toJSON()
+      const items = Array.from({ length: cart.items.length })
+        .map((_, i) => (
+          OrderItem.create({
+            OrderId: order.id,
+            ProductId: cart.items[i].dataValues.id,
+            price: cart.items[i].dataValues.price,
+            quantity: cart.items[i].CartItem.dataValues.quantity
+          })
+        ))
+
+      Promise.all(items)
 
       // 發送 mail
-      const email = req.user.email
+      const email = req.session.user.email
       const subject = `[TEST]Diving Park 訂購編號:${order.id} 成立，請把握時間付款`
       const status = '未出貨 / 未付款'
       const msg = '請點擊付款連結並使用測試信用卡付款! 感謝配合!'
@@ -106,21 +127,6 @@ const orderController = {
         payment_status: '-1'
       })
       return res.redirect('back')
-    } catch (e) {
-      console.log(e)
-    }
-  },
-  // 取得付款頁面
-  // get
-  getPayment: async (req, res) => {
-    try {
-      const order = await Order.findByPk(req.params.id, { include: 'items' })
-      const tradeInfo = mpgData.getData(order.amount, '產品名稱', req.user.email)
-      order.update({
-        ...req.body,
-        sn: tradeInfo.MerchantOrderNo
-      })
-      return res.render('payment', { order, tradeInfo })
     } catch (e) {
       console.log(e)
     }

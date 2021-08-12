@@ -20,6 +20,7 @@ const cartController = {
         return res.render('cart', { cart, totalPrice })
       } else {
         // 請先登入才能進購物車
+        req.flash('warning_msg', '請先登入~')
         return res.redirect('/users/sign-in')
       }
     } catch (e) {

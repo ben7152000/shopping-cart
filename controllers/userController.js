@@ -24,11 +24,13 @@ const userController = {
 
       // email 錯誤
       if (!user) {
+        req.flash('warning_msg', '信箱錯誤')
         return res.redirect('/users/sign-in')
       }
 
       // 一般使用者
       if (user.role !== 'user') {
+        req.flash('danger_msg', '權限不足')
         return res.redirect('/users/sign-in')
       }
 
@@ -37,6 +39,7 @@ const userController = {
 
       // 密碼錯誤
       if (!hashPassword) {
+        req.flash('warning_msg', '密碼錯誤')
         return res.redirect('/users/sign-in')
       }
 
@@ -49,7 +52,8 @@ const userController = {
       req.session.email = email
       req.session.token = token
 
-      return res.redirect('/product')
+      req.flash('success_msg', '登入成功')
+      return res.redirect('/products')
     } catch (e) {
       console.log(e)
     }
@@ -61,6 +65,7 @@ const userController = {
     req.session.email = ''
     req.session.token = ''
     req.session.cartId = ''
+    req.flash('success_msg', '登出成功')
     return res.redirect('/users/sign-in')
   },
   // 註冊頁面
@@ -79,20 +84,24 @@ const userController = {
       // 校驗
       // 不得為空
       if (!email || !password || !confirmPassword || !captcha) {
+        req.flash('warning_msg', '全部欄位都要填寫')
         return res.redirect('back')
       }
       // 兩個密碼要相同
       if (password !== confirmPassword) {
+        req.flash('warning_msg', '密碼不相同')
         return res.redirect('back')
       }
       // 驗證碼要相同
       if (req.session.captcha !== captcha) {
+        req.flash('warning_msg', '驗證碼錯誤')
         return res.redirect('back')
       }
 
       const user = await User.findOne({ where: { email } })
       // 使用者重複
       if (user) {
+        req.flash('warning_msg', '帳號註冊過了')
         return res.redirect('back')
       }
 
@@ -110,6 +119,7 @@ const userController = {
       // 清空 captcha
       req.session.captcha = ''
 
+      req.flash('success_msg', '註冊成功')
       return res.redirect('/users/sign-in')
     } catch (e) {
       console.log(e)
@@ -130,6 +140,7 @@ const userController = {
     req.session.email = email
     req.session.captcha = captcha
 
+    req.flash('success_msg', `驗證碼已發送至此信箱:${email}`)
     return res.redirect('/users/sign-up')
   }
 }

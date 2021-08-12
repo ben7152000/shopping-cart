@@ -1,23 +1,23 @@
-<div class="mt-3">
+<div class="container container-customer mt-3">
     {{> message}}
     <div class="row mt-3">
-        <div class="col-md-5">
+        <div class="col-md-6">
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col">商品名稱</th>
-                    <th scope="col">單價</th>
-                    <th scope="col">數量</th>
-                    <th scope="col">小計</th>
+                    <th scope="col" class="text-center">商品名稱</th>
+                    <th scope="col" class="text-center">單價</th>
+                    <th scope="col" class="text-center">數量</th>
+                    <th scope="col" class="text-center">小計</th>
                 </tr>
                 </thead>
                 <tbody>
-                {{#each order.orderProducts}}
-                    <tr>
-                        <td>{{this.name}}</td>
-                        <td>{{this.price}}</td>
-                        <td>{{this.OrderItem.quantity}}</td>
-                        <td>{{multiply this.price this.OrderItem.quantity}}</td>
+                {{#each order.items}}
+                    <tr style="height: 80px">
+                        <td class="text-center align-middle">{{this.name}}</td>
+                        <td class="text-center align-middle">{{this.price}}</td>
+                        <td class="text-center align-middle">{{this.OrderItem.quantity}}</td>
+                        <td class="text-center align-middle">{{multiply this.price this.OrderItem.quantity}}</td>
                     </tr>
                 {{/each}}
                 <tr>
@@ -34,23 +34,23 @@
             </table>
         </div>
 
-        <div>
-            <ul>
-                <li>訂單編號: {{order.id}}</li>
-                <li>姓名: {{order.name}}</li>
-                <li>電話: {{order.phone}}</li>
-                <li>地址: {{order.address}}</li>
-                <li>出貨狀態:
+        <div class="col-md-6 d-flex flex-column justify-content-between admin-order">
+            <ul class="d-flex flex-column align-items-center justify-content-center h-100 p-0">
+                <li class="py-2">訂單編號: {{order.id}}</li>
+                <li class="py-2">姓名: {{order.name}}</li>
+                <li class="py-2">電話: {{order.phone}}</li>
+                <li class="py-2">地址: {{order.address}}</li>
+                <li class="py-2">出貨狀態:
                     {{#equal order.shipping_status '1'}}已出貨{{/equal}}
                     {{#equal order.shipping_status '0'}}未出貨{{/equal}}
                     {{#equal order.shipping_status '-1'}}已取消{{/equal}}
                 </li>
-                <li>付款狀態:
+                <li class="py-2">付款狀態:
                     {{#equal order.payment_status '1'}}已付款{{/equal}}
                     {{#equal order.payment_status '0'}}未付款{{/equal}}
                 </li>
             </ul>
-            <div>
+            <div class="d-flex justify-content-center">
                 <form action="/admin/orders/{{order.id}}/ship" method="POST" class="d-inline">
                     <button type="submit" class="btn btn-success" onclick="return confirmShip()" {{#equal order.shipping_status '1'
                     }}disabled{{/equal}} {{#equal order.shipping_status '-1' }}disabled{{/equal}}>訂單出貨
@@ -58,11 +58,11 @@
                 </form>
                 {{#equal order.shipping_status '-1'}}
                     <form action="/admin/orders/{{order.id}}/recover" method="POST" class="d-inline">
-                        <button type="submit" class="btn btn-primary" onclick="return confirmRecover()">恢復訂單</button>
+                        <button type="submit" class="btn btn-primary mx-3" onclick="return confirmRecover()">恢復訂單</button>
                     </form>
                 {{else}}
                     <form action="/admin/orders/{{order.id}}/cancel" method="POST" class="d-inline">
-                        <button type="submit" class="btn btn-warning" onclick="return confirmCancel()">訂單取消</button>
+                        <button type="submit" class="btn btn-warning mx-3" onclick="return confirmCancel()">訂單取消</button>
                     </form>
                 {{/equal}}
                 <a href="/admin/orders" class="btn btn-secondary">回到訂單列表</a>

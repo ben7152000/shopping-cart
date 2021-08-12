@@ -5,10 +5,12 @@ const auth = {
     passport.authenticate('jwt', { session: false }, (err, user) => {
       if (!user) {
         console.log(err)
-        return res.redirect('/admin/login')
+        req.flash('warning_msg', 'JWT驗證未通過!')
+        return res.redirect('/admin/sign-in')
       }
       if (user.role !== 'admin') {
-        return res.redirect('/admin/login')
+        req.flash('danger_msg', '權限不足!')
+        return res.redirect('/admin/sign-in')
       }
       res.locals.user = req.user
       res.locals.isAuthenticated = req.isAuthenticated()
@@ -19,7 +21,8 @@ const auth = {
     passport.authenticate('jwt', { session: false }, (err, user) => {
       if (!user) {
         console.log(err)
-        return res.redirect('/users/login')
+        req.flash('warning_msg', 'JWT驗證未通過!')
+        return res.redirect('/users/sign-in')
       }
       res.locals.user = req.user
       res.locals.isAuthenticated = req.isAuthenticated()
