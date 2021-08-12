@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const fs = require('fs')
 const nodeMailer = require('../utils/nodemailer')
 const db = require('../models')
 const User = db.User
@@ -87,7 +88,7 @@ const adminController = {
           name,
           description,
           price,
-          image: req.file.path
+          image: `/upload/${req.file.originalname}`
         })
       } else {
         await Product.create({
@@ -127,7 +128,7 @@ const adminController = {
           name,
           description,
           price,
-          image: req.file.path
+          image: `/upload/${req.file.originalname}`
         })
       } else {
         await Product.create({
