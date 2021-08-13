@@ -14,7 +14,7 @@
 https://shopping-cart-node-mysql.herokuapp.com/
 ```
 
-## 3. 使用帳號
+## 3. 測試帳號 & 信用卡(一次付清)
 
 ```
 管理者 Admin
@@ -24,6 +24,10 @@ password: 12345678
 使用者 User
 email: user1@example.com
 password: 12345678
+
+信用卡號
+4000-2211-1111-1111
+日期、驗證碼隨意
 ```
 
 ## 3. 產品功能
