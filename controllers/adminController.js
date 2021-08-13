@@ -88,7 +88,7 @@ const adminController = {
           name,
           description,
           price,
-          image: `/upload/${req.file.originalname}`
+          image: `/upload/${req.file.filename}`
         })
       } else {
         await Product.create({
@@ -108,10 +108,7 @@ const adminController = {
     try {
       const status = 1
       const product = await Product.findByPk(req.params.id)
-      const products = await Product.findAll({
-        raw: true,
-        nest: true
-      })
+      const products = await Product.findAll({ raw: true, nest: true })
       return res.render('admin/products', { product: product.toJSON(), products, status })
     } catch (e) {
       console.log(e)
@@ -121,22 +118,14 @@ const adminController = {
   // put
   editProduct: async (req, res) => {
     try {
-      const { name, description, price } = req.body
       const product = await Product.findByPk(req.params.id)
       if (req.file) {
-        await Product.create({
-          name,
-          description,
-          price,
-          image: `/upload/${req.file.originalname}`
+        await product.update({
+          ...req.body,
+          image: req.file.originalname
         })
       } else {
-        await Product.create({
-          name,
-          description,
-          price,
-          image: product.image
-        })
+        await product.update({ ...req.body })
       }
       return res.redirect('/admin/products')
     } catch (e) {
