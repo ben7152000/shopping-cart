@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "seed": "npx sequelize db:seed --seed 20210811172119-users-seed-file.js 20210810173735-products-seed-file.js 20210810173856-carts-seed-file.js 20210810174038-orders-seed-file.js 20210810173924-cartItems-seed-file.js 20210810174150-orderItems-seed-file.js"
   },
   "author": "Ben",
   "license": "MIT",

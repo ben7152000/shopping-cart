@@ -12,5 +12,9 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
+    'no-console': 'off',
+    'prefer-const': 'error',
+    'prefer-arrow-callback': 'warn',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
 }
