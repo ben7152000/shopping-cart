@@ -10,6 +10,10 @@
 
 ## 2. 部屬網站
 
+```
+https://shopping-cart-node-mysql.herokuapp.com/
+```
+
 ## 3. 使用帳號
 
 ```
