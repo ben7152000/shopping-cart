@@ -130,36 +130,39 @@ const orderController = {
     }
   },
   // 交易後回傳
-  spgatewayCallback: async (req, res) => {
+  // post
+  newebpayCallback: async (req, res) => {
     try {
       const data = JSON.parse(mpgData.decryptData(req.body.TradeInfo))
       // 訂單
-      const order = await Order.findAll({
-        where: { sn: data.Result.MerchantOrderNo }
-      })
-      // 建立 payment
-      await Payment.create({
-        OrderId: order.id,
-        payment_method: data.Result.PaymentMethod ? data.Result.PaymentMethod : data.Result.PaymentType,
-        isSuccess: data.Status === 'SUCCESS',
-        failure_message: data.Message,
-        payTime: data.Result.PayTime
-      })
-      if (data.Status === 'SUCCESS') {
-        await order[0].update({
-          ...req.body,
-          payment_status: 1
-        })
+      const order = await Order.findOne({ where: { sn: data.Result.MerchantOrderNo } })
+      console.log('11111111111')
+      console.log('===================', order.id, data.Result.PaymentMethod, data.Message, data.Result.PayTime)
 
+      if (data.Status === 'SUCCESS') {
+        // 建立 payment
+        await Payment.create({
+          OrderId: order.id,
+          payment_method: data.Result.PaymentMethod ? data.Result.PaymentMethod : data.Result.PaymentType,
+          isSuccess: true,
+          failure_message: data.Message,
+          payTime: data.Result.PayTime
+        })
+        await order.update({
+          ...req.body,
+          payment_status: '1'
+        })
         // 發送 mail
         const email = req.user.email
         const subject = `[TEST]Diving Park 訂單編號:${order.id} 付款成功!`
         const status = '未出貨 / 已付款'
         const msg = '近期內會安排出貨 再麻煩注意電子郵件!'
         nodeMailer.sendMail(email, subject, nodeMailer.sendPayMail(order, status, msg))
+        req.flash('success_msg', `訂單編號:${order.id} 付款成功!`)
+      } else {
+        req.flash('warning_msg', `訂單編號:${order.id} 付款失敗!  [說明] ${data.Message}`)
       }
-
-      return res.redirect(`/orders/${order.id}`)
+      return res.redirect(`/order/${order.id}`)
     } catch (e) {
       console.log(e)
     }

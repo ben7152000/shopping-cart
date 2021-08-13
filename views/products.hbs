@@ -9,9 +9,7 @@
                         <img class="bd-placeholder-img card-img-top w-100" src={{this.dataValues.image}} alt="{{this.dataValues.name}}" height="225"/>
                         <div class="card-body">
                             <p class="card-text">
-                                <h4>
-                                    <a href="/products/{{this.dataValues.id}}" class="title">{{this.dataValues.name}}</a>
-                                </h4>
+                                <h4 class="title">{{this.dataValues.name}}</h4>
                                 <p class="ellipsis">{{this.dataValues.description}}</p>
                                 <h5 class="price text-center">$ {{this.dataValues.price}}</h5>
                             </p>
@@ -63,7 +61,7 @@
                         {{#each cart.items}}
                             <div class="row no-gutters my-3">
                                 <div class="col-md-6">
-                                    <img src="{{this.image}}" alt="{{this.name}}">
+                                    <img src="{{this.image}}" alt="{{this.name}}" class="h-100">
                                 </div>
                                 <div class="col-md-6">
                                     <div class="card-body">

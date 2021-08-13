@@ -113,7 +113,7 @@ const userController = {
       await User.create({
         email,
         password: hashPassword,
-        role: user
+        role: 'user'
       })
 
       // 清空 captcha

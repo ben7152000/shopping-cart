@@ -4,9 +4,9 @@ const URL = process.env.NEWEBPAY_URL
 const MerchantID = process.env.NEWEBPAY_MERCHANT_ID
 const HashKey = process.env.NEWEBPAY_HASH_KEY
 const HashIV = process.env.NEWEBPAY_HASH_IV
-const PayGateWay = 'https://ccore.spgateway.com/MPG/mpg_gateway'
-const ReturnURL = URL + '/spgateway/callback?from=ReturnURL'
-const NotifyURL = URL + '/spgateway/callback?from=NotifyURL'
+const PayGateWay = 'https://ccore.newebpay.com/MPG/mpg_gateway'
+const ReturnURL = URL + '/order/newebpay/callback?from=ReturnURL'
+const NotifyURL = URL + '/order/newebpay/callback?from=NotifyURL'
 const ClientBackURL = URL + '/order'
 
 // 串接資訊

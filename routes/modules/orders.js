@@ -7,6 +7,6 @@ router.post('/data', orderController.postOrder)
 router.get('/:id', orderController.getOrder)
 router.post('/:id/cancel', orderController.cancelOrder)
 
-router.post('/spgateway/callback', orderController.spgatewayCallback)
+router.post('/newebpay/callback', orderController.newebpayCallback)
 
 module.exports = router

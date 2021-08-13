@@ -10,6 +10,7 @@ const methodOverride = require('method-override')
 const cors = require('cors')
 const passport = require('passport')
 const flash = require('connect-flash')
+const MemoryStore = require('memorystore')(session)
 
 const app = express()
 const PORT = process.env.PORT || 8081
@@ -35,11 +36,12 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(cookieParser())
 app.use(flash())
 app.use(session({
-  secret: 'Ben',
+  secret: process.env.SESSION_SECRET,
   name: 'Ben',
-  cookie: { maxAge: 80000 },
+  cookie: { maxAge: 86400000 },
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: true,
+  store: new MemoryStore({ checkPeriod: 86400000 })
 }))
 app.use((req, res, next) => {
   if (req.session.token) {
