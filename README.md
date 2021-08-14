@@ -185,3 +185,7 @@ http://localhost:8081
 - [nodemailer](https://www.npmjs.com/package/nodemailer)
 - [nodemon](https://www.npmjs.com/package/nodemon)
 - [path](https://www.npmjs.com/package/path)
+- [express-xss-sanitizer](https://www.npmjs.com/package/express-xss-sanitizer)
+- [helmet](https://www.npmjs.com/package/helmet)
+- [hpp](https://www.npmjs.com/package/hpp)
+- [express-rate-limit](https://www.npmjs.com/package/express-rate-limit)

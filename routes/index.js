@@ -1,3 +1,4 @@
+const router = require('express').Router()
 const orders = require('./modules/orders')
 const carts = require('./modules/carts')
 const cartItems = require('./modules/cartItems')
@@ -7,12 +8,12 @@ const admin = require('./modules/admin')
 
 const auth = require('../middleware/auth')
 
-module.exports = (app, passport) => {
-  app.use('/order', auth.authenticated, orders)
-  app.use('/cart', carts)
-  app.use('/cartItem', cartItems)
-  app.use('/products', products)
-  app.use('/users', users)
-  app.use('/admin', admin)
-  app.use('/', (req, res) => res.redirect('/products'))
-}
+router.use('/order', auth.authenticated, orders)
+router.use('/cart', carts)
+router.use('/cartItem', cartItems)
+router.use('/products', products)
+router.use('/users', users)
+router.use('/admin', admin)
+router.use('/', (req, res) => res.redirect('/products'))
+
+module.exports = router
