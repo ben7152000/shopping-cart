@@ -37,7 +37,8 @@ const orderController = {
   // get
   getOrder: async (req, res) => {
     try {
-      const order = await Order.findByPk(req.params.id, { include: 'items' })
+      const id = req.params.id
+      const order = await Order.findByPk(id, { include: 'items' })
       if (order.toJSON().payment_status === '0') {
         const tradeData = mpgData.getData(order.amount, 'Diving Park-精選商品', req.user.email)
         await order.update({ sn: tradeData.MerchantOrderNo.toString() })
@@ -54,14 +55,13 @@ const orderController = {
   // get
   fillOrderData: async (req, res) => {
     try {
-      const cart = await Cart.findOne({
-        where: { UserId: req.user.id },
-        include: 'items'
-      })
+      const UserId = req.user.id
+      const cart = await Cart.findOne({ where: { UserId }, include: 'items' })
       if (!cart || !cart.items.length) {
         req.flash('warning_msg', '購物車空空的唷!')
         return res.redirect('/cart')
       }
+
       const cartId = cart.id
       const amount = cart.items.length > 0 ? cart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
       return res.render('orderInfo', { cartId, amount })
@@ -74,16 +74,12 @@ const orderController = {
   // name, address, phone, amount, shipping_status, payment_status
   postOrder: async (req, res) => {
     try {
-      const cart = await Cart.findByPk(req.body.cartId, { include: 'items' })
+      const { cartId } = req.body
+      const cart = await Cart.findByPk(cartId, { include: 'items' })
       // 建立訂單
       let order = await Order.create({
-        UserId: req.user.id,
-        name: req.body.name,
-        address: req.body.address,
-        phone: req.body.phone,
-        shipping_status: req.body.shipping_status,
-        payment_status: req.body.payment_status,
-        amount: req.body.amount
+        ...req.body,
+        UserId: req.user.id
       })
       order = order.toJSON()
       const items = Array.from({ length: cart.items.length })
@@ -96,7 +92,7 @@ const orderController = {
           })
         ))
 
-      Promise.all(items)
+      await Promise.all(items)
 
       // 發送 mail
       const email = req.user.email
@@ -114,16 +110,19 @@ const orderController = {
       console.log(e)
     }
   },
-  // 刪除訂單
+  // 取消訂單
   // post
   cancelOrder: async (req, res) => {
     try {
-      const order = await Order.findByPk(req.params.id)
+      const id = req.params.id
+      const order = await Order.findByPk(id)
       await order.update({
         ...req.body,
         shipping_status: '-1',
         payment_status: '-1'
       })
+      console.log('1111111111')
+      req.flash('success_msg', '訂單已取消')
       return res.redirect('back')
     } catch (e) {
       console.log(e)

@@ -48,6 +48,7 @@
                 <li class="py-2">付款狀態:
                     {{#equal order.payment_status '1'}}已付款{{/equal}}
                     {{#equal order.payment_status '0'}}未付款{{/equal}}
+                    {{#equal order.payment_status '-1'}}已取消{{/equal}}
                 </li>
             </ul>
             <div class="d-flex justify-content-center">

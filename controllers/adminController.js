@@ -25,11 +25,13 @@ const adminController = {
 
       // email 錯誤
       if (!user) {
+        req.flash('warning_msg', '信箱錯誤')
         return res.redirect('/admin/sign-in')
       }
 
       // 管理者
       if (user.role !== 'admin') {
+        req.flash('danger_msg', '非管理者')
         return res.redirect('/admin/sign-in')
       }
 
@@ -38,6 +40,7 @@ const adminController = {
 
       // 密碼錯誤
       if (!hashPassword) {
+        req.flash('warning_msg', '密碼錯誤')
         return res.redirect('/users/sign-in')
       }
 
@@ -50,6 +53,7 @@ const adminController = {
       req.session.email = email
       req.session.token = token
 
+      req.flash('success_msg', '登出成功')
       return res.redirect('/admin/products')
     } catch (e) {
       console.log(e)
@@ -67,10 +71,7 @@ const adminController = {
   // get
   getProducts: async (req, res) => {
     try {
-      const products = await Product.findAll({
-        raw: true,
-        nest: true
-      })
+      const products = await Product.findAll({ raw: true, nest: true })
       return res.render('admin/products', { products })
     } catch (e) {
       console.log(e)
@@ -81,21 +82,15 @@ const adminController = {
   // name, description, price
   postProducts: async (req, res) => {
     try {
-      const { name, description, price } = req.body
-      if (req.file) {
-        await Product.create({
-          name,
-          description,
-          price,
-          image: `/upload/${req.file.filename}`
-        })
-      } else {
-        await Product.create({
-          name,
-          description,
-          price
-        })
+      const file = req.file
+      if (!file) {
+        await Product.create({ ...req.body })
+        return res.redirect('back')
       }
+      await Product.create({
+        ...req.body,
+        image: `/upload/${req.file.filename}`
+      })
       return res.redirect('back')
     } catch (e) {
       console.log(e)
@@ -106,8 +101,11 @@ const adminController = {
   getProduct: async (req, res) => {
     try {
       const status = 1
-      const product = await Product.findByPk(req.params.id)
-      const products = await Product.findAll({ raw: true, nest: true })
+      const id = req.params.id
+      const [product, products] = await Promise.all([
+        Product.findByPk(id),
+        Product.findAll({ raw: true, nest: true })
+      ])
       return res.render('admin/products', { product: product.toJSON(), products, status })
     } catch (e) {
       console.log(e)
@@ -117,15 +115,17 @@ const adminController = {
   // put
   editProduct: async (req, res) => {
     try {
-      const product = await Product.findByPk(req.params.id)
-      if (req.file) {
-        await product.update({
-          ...req.body,
-          image: req.file.originalname
-        })
-      } else {
+      const id = req.params.id
+      const product = await Product.findByPk(id)
+      const file = req.file
+      if (!file) {
         await product.update({ ...req.body })
+        return res.redirect('/admin/products')
       }
+      await product.update({
+        ...req.body,
+        image: req.file.originalname
+      })
       return res.redirect('/admin/products')
     } catch (e) {
       console.log(e)
@@ -135,7 +135,8 @@ const adminController = {
   // delete
   deleteProduct: async (req, res) => {
     try {
-      const product = await Product.findByPk(req.params.id)
+      const id = req.params.id
+      const product = await Product.findByPk(id)
       await product.destroy()
       return res.redirect('back')
     } catch (e) {
@@ -146,10 +147,7 @@ const adminController = {
   // get
   getOrders: async (req, res) => {
     try {
-      const orders = await Order.findAll({
-        raw: true,
-        nest: true
-      })
+      const orders = await Order.findAll({ raw: true, nest: true })
       return res.render('admin/orders', { orders })
     } catch (e) {
       console.log(e)
@@ -159,7 +157,8 @@ const adminController = {
   // get
   getOrder: async (req, res) => {
     try {
-      const order = await Order.findByPk(req.params.id, { include: 'items' })
+      const id = req.params.id
+      const order = await Order.findByPk(id, { include: 'items' })
       return res.render('admin/order', { order: order.toJSON() })
     } catch (e) {
       console.log(e)
@@ -169,7 +168,8 @@ const adminController = {
   // post
   shipOrder: async (req, res) => {
     try {
-      const order = await Order.findByPk(req.params.id)
+      const id = req.params.id
+      const order = await Order.findByPk(id)
       await order.update({ shipping_status: 1 })
       // 發送 mail
       const user = await User.findByPk(order.UserId)
@@ -178,6 +178,7 @@ const adminController = {
       const status = '已出貨 / 已付款'
       const msg = '商品已出貨 再麻煩注意收件地址!'
       nodeMailer.sendMail(email, subject, nodeMailer.sendPayMail(order, status, msg))
+      return res.redirect('back')
     } catch (e) {
       console.log(e)
     }
@@ -186,7 +187,8 @@ const adminController = {
   // post
   cancelOrder: async (req, res) => {
     try {
-      const order = await Order.findByPk(req.params.id)
+      const id = req.params.id
+      const order = await Order.findByPk(id)
       await order.update({ shipping_status: -1 })
       return res.redirect('back')
     } catch (e) {
@@ -197,7 +199,8 @@ const adminController = {
   // post
   recoverOrder: async (req, res) => {
     try {
-      const order = await Order.findByPk(req.params.id)
+      const id = req.params.id
+      const order = await Order.findByPk(id)
       await order.update({ shipping_status: 0 })
       return res.redirect('back')
     } catch (e) {
@@ -218,12 +221,9 @@ const adminController = {
   // post
   changeAuth: async (req, res) => {
     try {
-      const user = await User.findByPk(req.params.id)
-      if (user.role === 'admin') {
-        await user.update({ role: 'user' })
-      } else {
-        await user.update({ role: 'admin' })
-      }
+      const id = req.params.id
+      const user = await User.findByPk(id)
+      user.role === 'admin' ? await user.update({ role: 'user' }) : await user.update({ role: 'admin' })
       return res.redirect('/admin/authority')
     } catch (e) {
       console.log(e)

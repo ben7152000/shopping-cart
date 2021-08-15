@@ -31,7 +31,12 @@
     <ul class="list-group mb-3">
         <li class="list-group-item bg-light text-center">
             {{#if paidOrder}}
-                <h3 class="font-weight-bold">訂單付款成功 Email 已寄出給您!</h3>
+                {{#equal order.payment_status '1'}}
+                    <h3 class="font-weight-bold">訂單付款成功 Email 已寄出給您!</h3>
+                {{/equal}}
+                {{#equal order.payment_status '-1'}}
+                    <h3 class="font-weight-bold">訂單已取消</h3>
+                {{/equal}}
             {{else}}
                 <h3 class="font-weight-bold">訂單成立 Email 已寄出給您!</h3>
             {{/if}}
@@ -67,21 +72,27 @@
                     <div>付款狀態:
                         {{#equal order.payment_status '1'}}已付款{{/equal}}
                         {{#equal order.payment_status '0'}}未付款{{/equal}}
+                        {{#equal order.payment_status '-1'}}已取消{{/equal}}
                     </div>
                 </div>
                 {{#if paidOrder}}
                 {{else}}
-                    <form name="Newebpay" action="{{tradeData.PayGateWay}}" method="POST" class="d-inline">
-                        <button type="submit" class="btn btn-outline-custom">前往付款</button>
-                        {{!-- MerchantID: --}}
-                        <input type="hidden" name="MerchantID" value="{{tradeData.MerchantID}}"><br>
-                        {{!-- TradeInfo: --}}
-                        <input type="hidden" name="TradeInfo" value="{{tradeData.TradeInfo}}"><br>
-                        {{!-- TradeSha: --}}
-                        <input type="hidden" name="TradeSha" value="{{tradeData.TradeSha}}"><br>
-                        {{!-- Version: --}}
-                        <input type="hidden" name="Version" value="{{tradeData.Version}}"><br>
-                    </form>
+                    <div class="d-flex">
+                        <form name="Newebpay" action="{{tradeData.PayGateWay}}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-outline-custom">前往付款</button>
+                            {{!-- MerchantID: --}}
+                            <input type="hidden" name="MerchantID" value="{{tradeData.MerchantID}}"><br>
+                            {{!-- TradeInfo: --}}
+                            <input type="hidden" name="TradeInfo" value="{{tradeData.TradeInfo}}"><br>
+                            {{!-- TradeSha: --}}
+                            <input type="hidden" name="TradeSha" value="{{tradeData.TradeSha}}"><br>
+                            {{!-- Version: --}}
+                            <input type="hidden" name="Version" value="{{tradeData.Version}}"><br>
+                        </form>
+                        <form action="/order/{{order.id}}/cancel" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-outline-custom ml-3" onclick="return confirmCancel()">取消訂單</button>
+                        </form>
+                    </div>
                 {{/if}}
             </div>
         </li>
