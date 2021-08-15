@@ -171,3 +171,17 @@ img {
     background: var(--light);
     padding: 15px;
 }
+
+/* 分頁 */
+.page-link {
+    color: var(--primary);
+}
+
+.page-link:hover {
+    color: var(--primary);
+}
+
+.page-item.active .page-link {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
