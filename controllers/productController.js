@@ -4,8 +4,10 @@ const Cart = db.Cart
 const CartItem = db.CartItem
 
 const productController = {
-  // 所有產品
-  // get
+  /*
+     功能: 所有產品
+     方法: GET
+  */
   getProducts: async (req, res, next) => {
     try {
       // 一面商品上限
@@ -24,8 +26,7 @@ const productController = {
       // 分頁
       const page = Number(req.query.page) || 1
       const pages = Math.ceil(products.count / PAGE_LIMIT)
-      const totalPage = Array.from({ length: pages })
-        .map((_, i) => i + 1)
+      const totalPage = Array.from({ length: pages }).map((_, i) => i + 1)
       const prev = page - 1 ? page - 1 : 1
       const next = page + 1 > pages ? pages : page + 1
 
@@ -95,15 +96,11 @@ const productController = {
             }
             // 刪除購物車
             if (cart.id !== req.session.cartId) {
-              await Cart.destroy(
-                { where: { id: req.session.cartId } }
-              )
+              await Cart.destroy({ where: { id: req.session.cartId } })
             } else {
               req.session.cartId = cart.id
             }
-            let userCart = await Cart.findByPk(cart.id, {
-              include: 'items'
-            })
+            let userCart = await Cart.findByPk(cart.id, { include: 'items' })
             userCart = userCart.toJSON()
             const totalPrice = userCart.items.length > 0 ? userCart.items.map(d => d.price * d.CartItem.quantity).reduce((a, b) => a + b) : 0
             return res.render('products', { products, cart: userCart, totalPrice, page, totalPage, prev, next })

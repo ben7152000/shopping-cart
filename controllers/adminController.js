@@ -7,15 +7,20 @@ const Product = db.Product
 const Order = db.Order
 
 const adminController = {
-  // 管理者登入頁面
-  // get
+  /*
+      功能: 管理者登入頁面
+      方法: GET
+  */
   signInPage: (req, res) => {
     const { email } = req.session
     return res.render('admin/signin', { email })
   },
-  // 管理者登入
-  // post
-  // email, password
+
+  /*
+      功能: 管理者登入
+      方法: POST
+      參數: email, password
+  */
   signIn: async (req, res) => {
     try {
       const { email, password } = req.body
@@ -59,16 +64,22 @@ const adminController = {
       console.log(e)
     }
   },
-  // 管理者登出
-  // get
+
+  /*
+      功能: 管理者登出
+      方法: GET
+  */
   signOut: (req, res) => {
     req.logout()
     req.session.email = ''
     req.session.token = ''
     return res.redirect('/admin/sign-in')
   },
-  // 所有產品頁面
-  // get
+
+  /*
+     功能: 所有產品頁面
+     方法: GET
+  */
   getProducts: async (req, res) => {
     try {
       const products = await Product.findAll({ raw: true, nest: true })
@@ -77,9 +88,12 @@ const adminController = {
       console.log(e)
     }
   },
-  // 註冊商品
-  // post
-  // name, description, price
+
+  /*
+     功能: 註冊商品
+     方法: POST
+     參數: name, description, price, image
+  */
   postProducts: async (req, res) => {
     try {
       const file = req.file
@@ -96,8 +110,11 @@ const adminController = {
       console.log(e)
     }
   },
-  // 商品詳細
-  // get
+
+  /*
+     功能: 商品詳細
+     方法: GET
+  */
   getProduct: async (req, res) => {
     try {
       const status = 1
@@ -111,8 +128,12 @@ const adminController = {
       console.log(e)
     }
   },
-  // 商品修改
-  // put
+
+  /*
+     功能: 商品修改
+     方法: PUT
+     參數: name, description, price, image
+  */
   editProduct: async (req, res) => {
     try {
       const id = req.params.id
@@ -131,8 +152,11 @@ const adminController = {
       console.log(e)
     }
   },
-  // 商品刪除
-  // delete
+
+  /*
+     功能: 商品刪除
+     方法: DELETE
+  */
   deleteProduct: async (req, res) => {
     try {
       const id = req.params.id
@@ -143,8 +167,11 @@ const adminController = {
       console.log(e)
     }
   },
-  // 所有訂單
-  // get
+
+  /*
+     功能: 所有訂單
+     方法: GET
+  */
   getOrders: async (req, res) => {
     try {
       const orders = await Order.findAll({ raw: true, nest: true })
@@ -153,8 +180,11 @@ const adminController = {
       console.log(e)
     }
   },
-  // 訂單詳細
-  // get
+
+  /*
+     功能: 訂單詳細
+     方法: GET
+  */
   getOrder: async (req, res) => {
     try {
       const id = req.params.id
@@ -164,8 +194,12 @@ const adminController = {
       console.log(e)
     }
   },
-  // 訂單運送狀態
-  // post
+
+  /*
+     功能: 訂單運送狀態
+     方法: POST
+     參數: params.id
+  */
   shipOrder: async (req, res) => {
     try {
       const id = req.params.id
@@ -183,8 +217,12 @@ const adminController = {
       console.log(e)
     }
   },
-  // 訂單取消
-  // post
+
+  /*
+     功能: 訂單取消
+     方法: POST
+     參數: params.id
+  */
   cancelOrder: async (req, res) => {
     try {
       const id = req.params.id
@@ -195,8 +233,12 @@ const adminController = {
       console.log(e)
     }
   },
-  // 訂單恢復
-  // post
+
+  /*
+     功能: 訂單恢復
+     方法: POST
+     參數: params.id
+  */
   recoverOrder: async (req, res) => {
     try {
       const id = req.params.id
@@ -207,8 +249,11 @@ const adminController = {
       console.log(e)
     }
   },
-  // 取得所有使用者
-  // get
+
+  /*
+     功能: 取得所有使用者
+     方法: GET
+  */
   getUsers: async (req, res) => {
     try {
       const users = await User.findAll({ raw: true, nest: true })
@@ -217,8 +262,12 @@ const adminController = {
       console.log(e)
     }
   },
-  // 使用者權限修改
-  // post
+
+  /*
+     功能: 使用者權限修改
+     方法: POST
+     參數: params.id
+  */
   changeAuth: async (req, res) => {
     try {
       const id = req.params.id

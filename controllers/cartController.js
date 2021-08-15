@@ -3,8 +3,10 @@ const Cart = db.Cart
 const CartItem = db.CartItem
 
 const cartController = {
-  // 取所有產品
-  // get
+  /*
+     功能: 取所有產品
+     方法: GET
+  */
   getCart: async (req, res) => {
     try {
       // 確認使用者
@@ -28,8 +30,12 @@ const cartController = {
       console.log(e)
     }
   },
-  // 加入購物車
-  // post
+
+  /*
+     功能: 加入購物車
+     方法: POST
+     參數: user.id, session.cartId, productId
+  */
   postCart: async (req, res) => {
     try {
       // 判斷是否有使用者
@@ -62,8 +68,12 @@ const cartController = {
       console.log(e)
     }
   },
-  // 增加商品數量
-  // post
+
+  /*
+     功能: 增加商品數量
+     方法: POST
+     參數: params.id
+  */
   addCartItem: async (req, res) => {
     try {
       const id = req.params.id
@@ -76,8 +86,12 @@ const cartController = {
       console.log(e)
     }
   },
-  // 減少商品數量
-  // post
+
+  /*
+     功能: 減少商品數量
+     方法: POST
+     參數: params.id
+  */
   subCartItem: async (req, res) => {
     try {
       const id = req.params.id
@@ -90,8 +104,12 @@ const cartController = {
       console.log(e)
     }
   },
-  // 刪除商品
-  // delete
+
+  /*
+     功能: 刪除商品
+     方法: DELETE
+     參數: params.id
+  */
   deleteCartItem: async (req, res) => {
     try {
       const id = req.params.id

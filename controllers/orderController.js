@@ -7,8 +7,10 @@ const nodeMailer = require('../utils/nodemailer')
 const mpgData = require('../utils/mpgData')
 
 const orderController = {
-  // 取得所有訂單
-  // get
+  /*
+     功能: 取得所有訂單
+     方法: GET
+  */
   getOrders: async (req, res) => {
     try {
       const ordersHavingProducts = await Order.findAll({
@@ -33,8 +35,12 @@ const orderController = {
       console.log(e)
     }
   },
-  // 個別訂單
-  // get
+
+  /*
+     功能: 個別訂單
+     方法: GET
+     參數: params.id
+  */
   getOrder: async (req, res) => {
     try {
       const id = req.params.id
@@ -51,8 +57,12 @@ const orderController = {
       console.log(e)
     }
   },
-  // 訂購清單
-  // get
+
+  /*
+     功能: 訂購清單
+     方法: GET
+     參數: user.id
+  */
   fillOrderData: async (req, res) => {
     try {
       const UserId = req.user.id
@@ -69,9 +79,12 @@ const orderController = {
       console.log(e)
     }
   },
-  // 建立訂單
-  // post
-  // name, address, phone, amount, shipping_status, payment_status
+
+  /*
+     功能: 建立訂單
+     方法: POST
+     參數: name, address, phone, amount, shipping_status, payment_status
+  */
   postOrder: async (req, res) => {
     try {
       const { cartId } = req.body
@@ -110,8 +123,12 @@ const orderController = {
       console.log(e)
     }
   },
-  // 取消訂單
-  // post
+
+  /*
+     功能: 取消訂單
+     方法: POST
+     參數: params.id
+  */
   cancelOrder: async (req, res) => {
     try {
       const id = req.params.id
@@ -121,22 +138,23 @@ const orderController = {
         shipping_status: '-1',
         payment_status: '-1'
       })
-      console.log('1111111111')
       req.flash('success_msg', '訂單已取消')
       return res.redirect('back')
     } catch (e) {
       console.log(e)
     }
   },
-  // 交易後回傳
-  // post
+
+  /*
+     功能: 交易後回傳
+     方法: POST
+     參數: MerchantID, TradeInfo, TradeSha, Version
+  */
   newebpayCallback: async (req, res) => {
     try {
       const data = JSON.parse(mpgData.decryptData(req.body.TradeInfo))
       // 訂單
       const order = await Order.findOne({ where: { sn: data.Result.MerchantOrderNo } })
-      console.log('11111111111')
-      console.log('===================', order.id, data.Result.PaymentMethod, data.Message, data.Result.PayTime)
 
       if (data.Status === 'SUCCESS') {
         // 建立 payment

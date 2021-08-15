@@ -5,16 +5,21 @@ const User = db.User
 const nodeMailer = require('../utils/nodemailer')
 
 const userController = {
-  // 登入頁面
-  // get
+  /*
+     功能: 登入頁面
+     方法: GET
+  */
   signInPage: (req, res) => {
     const front = true
     const { email } = req.session
     return res.render('admin/signin', { email, front })
   },
-  // 登入
-  // post
-  // email, password
+
+  /*
+     功能: 登入
+     方法: POST
+     參數: email, password
+  */
   signIn: async (req, res) => {
     try {
       const { email, password } = req.body
@@ -58,8 +63,11 @@ const userController = {
       console.log(e)
     }
   },
-  // 登出
-  // get
+
+  /*
+     功能: 登出
+     方法: GET
+  */
   signOut: (req, res) => {
     req.logout()
     req.session.email = ''
@@ -68,15 +76,21 @@ const userController = {
     req.flash('success_msg', '登出成功')
     return res.redirect('/users/sign-in')
   },
-  // 註冊頁面
-  // get
+
+  /*
+     功能: 註冊頁面
+     方法: GET
+  */
   signUpPage: (req, res) => {
     const { email } = req.session
     return res.render('signup', { email })
   },
-  // 註冊
-  // post
-  // email, password, confirmPassword, captcha
+
+  /*
+     功能: 註冊
+     方法: POST
+     參數: email, password, confirmPassword, captcha
+  */
   signUp: async (req, res) => {
     try {
       const { email, password, confirmPassword, captcha } = req.body
@@ -125,9 +139,12 @@ const userController = {
       console.log(e)
     }
   },
-  // 傳送驗證碼
-  // post
-  // email
+
+  /*
+     功能: 傳送驗證碼
+     方法: POST
+     參數: email
+  */
   sendCaptcha: (req, res) => {
     const { email } = req.body
 
